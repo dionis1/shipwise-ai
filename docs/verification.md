@@ -41,3 +41,18 @@ GitHub remote CI is independently confirmed. Repository branch protection, produ
 - Local demo accounts exist only because they were explicitly requested. Their generated credentials are not in source control. E2E fixtures are isolated and destroyed after each run.
 
 See `README.md`, `docs/architecture/` and `docs/security/production-readiness.md` for commands, module boundaries, exact roles/permissions, migration ownership and release blockers.
+
+## Phase 1.6 local verification (2026-10-28)
+
+| Check | Observed result |
+| --- | --- |
+| `make test` | Passed: PHPUnit **48 tests / 188 assertions** and Vitest **33 tests / 7 files** |
+| `make quality` | Passed: backend static/configuration/mapping/style checks, TypeScript, ESLint, Prettier, production build, OpenAPI lint and dependency audits |
+| Translation coverage | **305 matching keys** in each EN/DE/FR catalog, placeholder and static Vue-copy checks passed |
+| `bash scripts/e2e.sh` | **16 Playwright workflows passed** on an isolated database; EN/DE/FR accounts, real localized Mailpit links, all existing routes, invitation/role/suspension flows and last-admin safeguard |
+| Accessibility and layout | Tested 390px, 768px and 1440px viewports, no horizontal overflow in covered routes, Tab containment/Escape/focus restoration; no Axe violations in scanned forms, settings, audit and dialogs |
+| Security preservation | Existing CSRF, session revocation, RBAC and token tests passed; production staff MFA restriction remains |
+
+Browser screenshots are generated at `apps/frontend/test-results/redesign-audit-{390,768,1440}.png` and uploaded by CI as short-lived artifacts. They are not committed. Automated checks and local browser inspection do not constitute a comprehensive accessibility, penetration or production deployment audit. Phase 1.5 remains planned and Phase 2 has not started.
+
+Remote verification for the final redesign commit will be recorded after the actual GitHub Actions run completes.

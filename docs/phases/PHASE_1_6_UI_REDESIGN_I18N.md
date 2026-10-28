@@ -1,6 +1,6 @@
 # Phase 1.6 — UI redesign and internationalization
 
-Status: Implementation in progress. This phase does not complete Phase 1.5 or start Phase 2.
+Status: Implementation complete; local verification passed, remote CI verification pending. This phase does not complete Phase 1.5 or start Phase 2.
 
 ## Design direction
 
@@ -30,4 +30,4 @@ The backend stores `users.preferred_locale` through an additive migration and OR
 
 Production staff MFA restrictions remain in place. Phase 1.5 deployment, durable email, backup/restore, monitoring and compliance work remain planned. Carrier integrations, quotations, pricing, orders, payments, labels and AI are outside this task. A separate request is required for Phase 2.
 
-Final execution evidence and remaining limitations will be recorded here and in `docs/verification.md` after checks actually run.
+Local verification passed: 48 PHPUnit tests / 188 assertions, 33 Vitest tests, 16 Playwright workflows and the complete quality gate. Translation checks cover 305 keys per locale. Browser workflows include EN/DE/FR account and staff lifecycles, role restrictions, last-administrator protection, native-dialog keyboard behavior, overflow and Axe scans at mobile/tablet/desktop widths. See `docs/verification.md` for execution evidence and limitations, and `docs/design/README.md` for tokens, components, licensing and translation maintenance. Remote CI evidence will be added after execution.

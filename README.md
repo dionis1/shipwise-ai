@@ -29,6 +29,12 @@ Enter a unique password through the hidden interactive prompt. No default staff 
 
 For optional local demo accounts run `docker compose exec backend php bin/console app:seed-demo-users`. It creates active dummy accounts for all ten roles, prints a generated password once, skips existing accounts and refuses any environment except `dev`. Keep the printed credentials outside Git. These accounts bypass onboarding intentionally for local testing; they are not production bootstrap credentials.
 
+## Interface and languages
+
+The light interface supports English, German and French on every existing route. Use the language selector in the public or account header. Anonymous selection is saved locally; after login the account preference takes precedence and changes are saved without signing out. Registration and staff invitations choose the recipient language; verification, reset and invitation emails use that preference.
+
+Run `make migrate` after pulling this change to add the account locale column. See the [redesign delivery report](docs/phases/PHASE_1_6_UI_REDESIGN_I18N.md) and [design and translation guide](docs/design/README.md) for components, tokens, licenses and instructions for adding a language.
+
 ## Commands
 
 | Command | Purpose |
@@ -36,7 +42,7 @@ For optional local demo accounts run `docker compose exec backend php bin/consol
 | `make setup` | Install locked dependencies and initialize local environment files |
 | `make migrate` | Apply committed PostgreSQL migrations |
 | `make test` | PHPUnit against isolated `_test` database and Vitest |
-| `make quality` | Composer, PHPStan, style, Symfony, Doctrine mapping, TypeScript, ESLint, build, API lint and audits |
+| `make quality` | Composer, PHPStan, style, Symfony, Doctrine mapping, TypeScript, translation coverage, ESLint, build, API lint and audits |
 | `make e2e` | Separate ephemeral Compose project, generated test password, Playwright workflows; destroys its own volumes on exit |
 | `make reset` | Confirm and reset **development** database only |
 | `docker compose exec frontend npm run api:generate` | Regenerate TypeScript from OpenAPI |
