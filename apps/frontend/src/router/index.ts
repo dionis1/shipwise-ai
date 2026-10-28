@@ -3,6 +3,7 @@ import { useSession } from '../stores/session'
 import AuthView from '../views/AuthView.vue'
 import HomeView from '../views/HomeView.vue'
 import CustomerView from '../views/CustomerView.vue'
+import AdminView from '../views/AdminView.vue'
 import ErrorView from '../views/ErrorView.vue'
 export const adminLinks = [
   { path: '/admin', label: 'Overview', permission: 'platform.dashboard.view', symbol: '◫' },
@@ -20,7 +21,7 @@ export const router = createRouter({ history: createWebHistory(), routes: [
   { path: '/', component: HomeView },
   ...['login','register','verify-email','forgot-password','reset-password','accept-invitation'].map(name => ({ path: '/'+name, component: AuthView })),
   ...['/app','/app/profile','/app/settings'].map(path => ({ path, component: CustomerView, meta: { authenticated: true, customer: true } })),
-  ...adminLinks.map(link => ({ path: link.path, component: ErrorView, meta: { authenticated: true, permission: link.permission } })),
+  ...adminLinks.map(link => ({ path: link.path, component: AdminView, meta: { authenticated: true, permission: link.permission } })),
   { path: '/forbidden', component: ErrorView },
   { path: '/:pathMatch(.*)*', component: ErrorView },
 ] })
