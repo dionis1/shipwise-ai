@@ -77,6 +77,10 @@ See [verification report](docs/verification.md) for commands actually executed, 
 
 This is a development foundation, **not a production-ready deployment**. Mandatory staff MFA is not implemented; staff login is deliberately disabled under `APP_ENV=prod`. See [production requirements](docs/security/production-readiness.md) before changing that guard. GDPR compliance requires a separate legal and operational review.
 
-## Next phase
+## Phase 1.5 — Production readiness gate
+
+Before exposing customer accounts or staff administration to real users, implement the [Phase 1.5 production readiness requirements](docs/phases/PHASE_1_5_PRODUCTION_READINESS.md). This is a separate, **planned** release-hardening phase, not completed functionality. The current `compose.yaml` is for development only and staff authentication under `APP_ENV=prod` remains intentionally blocked until mandatory MFA is enforced and tested. Phase 1.5 excludes carrier quoting, purchases, payments, labels and AI.
+
+## Phase 2 — Carrier comparison and quoting
 
 Start with approved carrier contracts, quote provenance, backend pricing in integer minor units, expiring immutable offers and a single sandbox adapter. Then add verified PSP events, transactional outbox/inbox, idempotent order purchase processing, private labels and reconciliation for unknown provider outcomes. Preserve the [future purchase safety design](docs/ARCHITECTURE.md); do not connect an AI model directly to financial or carrier purchase actions.
