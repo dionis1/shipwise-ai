@@ -11,7 +11,9 @@
     "test": "vitest run",
     "test:e2e": "playwright test",
     "api:generate": "openapi-typescript ../../docs/api/openapi.json -o src/api/generated.ts",
-    "api:validate": "redocly lint ../../docs/api/openapi.json"
+    "api:validate": "redocly lint ../../docs/api/openapi.json",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "pinia": "^3.0.3",
@@ -30,6 +32,7 @@
     "eslint-plugin-vue": "^10.5.1",
     "jsdom": "^26.1.0",
     "openapi-typescript": "^7.10.1",
+    "prettier": "^3.9.10",
     "tailwindcss": "^4.1.16",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.46.2",

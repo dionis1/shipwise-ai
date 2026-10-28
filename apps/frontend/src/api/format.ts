@@ -1,1 +1,8 @@
-export function formatMoney(minorUnits: number, currency: string, locale = 'en-GB'): string { return new Intl.NumberFormat(locale, { style: 'currency', currency }).format(minorUnits / 10 ** (new Intl.NumberFormat(locale, { style: 'currency', currency }).resolvedOptions().maximumFractionDigits ?? 2)) }
+export function formatMoney(minorUnits: number, currency: string, locale = 'en-GB'): string {
+  return new Intl.NumberFormat(locale, { style: 'currency', currency }).format(
+    minorUnits /
+      10 **
+        (new Intl.NumberFormat(locale, { style: 'currency', currency }).resolvedOptions()
+          .maximumFractionDigits ?? 2),
+  )
+}

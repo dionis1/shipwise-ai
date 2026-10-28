@@ -1,1 +1,8 @@
-<template><main class="error-page"><span class="eyebrow">WORKSPACE UNAVAILABLE</span><h1>This page isn’t available.</h1><p>You may need to sign in with an authorized account, or try again later.</p><RouterLink class="button" to="/login">Back to sign in</RouterLink></main></template>
+<template>
+  <main class="error-page">
+    <span class="eyebrow">WORKSPACE UNAVAILABLE</span>
+    <h1>This page isn’t available.</h1>
+    <p>You may need to sign in with an authorized account, or try again later.</p>
+    <RouterLink class="button" to="/login">Back to sign in</RouterLink>
+  </main>
+</template>
