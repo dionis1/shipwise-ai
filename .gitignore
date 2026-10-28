@@ -1,0 +1,14 @@
+*.zip
+.env
+.env.local
+.env.*.local
+/vendor/
+**/vendor/
+**/node_modules/
+**/var/
+**/dist/
+**/coverage/
+**/test-results/
+**/playwright-report/
+.phpunit.cache/
+
