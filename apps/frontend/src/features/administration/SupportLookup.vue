@@ -1,58 +1,75 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { api, type CustomerPage } from '../../api/client'
+import { translatedCode } from '../../i18n'
+import { useFeedback } from '../../composables/useFeedback'
+import AppCard from '../../components/AppCard.vue'
+import AppInput from '../../components/AppInput.vue'
+import AppButton from '../../components/AppButton.vue'
+import AppTable from '../../components/AppTable.vue'
+import AppBadge from '../../components/AppBadge.vue'
+import AppEmptyState from '../../components/AppEmptyState.vue'
 import FeedbackBox from '../../components/FeedbackBox.vue'
 import PageControls from '../../components/PageControls.vue'
-const search = ref(''),
+const { t } = useI18n(),
+  search = ref(''),
   result = ref<CustomerPage | null>(null),
-  error = ref(''),
-  busy = ref(false)
+  busy = ref(false),
+  { failure, errorText, clear } = useFeedback()
 async function load(page = 1) {
+  clear()
   busy.value = true
-  error.value = ''
   try {
     result.value = await api<CustomerPage>(
       '/admin/customers?' + new URLSearchParams({ search: search.value, page: String(page) }),
     )
   } catch (e) {
-    error.value = String(e)
+    failure.value = e
+    result.value = null
   } finally {
     busy.value = false
   }
 }
 </script>
 <template>
-  <section class="panel">
-    <h2>Customer lookup</h2>
-    <p class="muted">Only account name, email and status are available to support.</p>
-    <form class="filters" @submit.prevent="load()">
-      <label
-        >Email search<input v-model="search" type="search" placeholder="Customer email" /></label
-      ><button :disabled="busy">Search accounts</button>
+  <AppCard :title="t('support.title')">
+    <p class="muted">{{ t('support.description') }}</p>
+    <form class="support-search" @submit.prevent="load()">
+      <AppInput v-model="search" :label="t('support.search')" type="search" />
+      <AppButton type="submit" icon="search" :busy="busy">{{ t('support.button') }}</AppButton>
     </form>
-    <FeedbackBox :error="error" :loading="busy" /><template v-if="result"
-      ><table>
+    <FeedbackBox :error="errorText" :loading="busy" />
+    <template v-if="result && !busy">
+      <AppTable v-if="result.items.length" :caption="t('support.title')" class="responsive-table">
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Status</th>
+            <th>{{ t('common.name') }}</th>
+            <th>{{ t('common.email') }}</th>
+            <th>{{ t('common.status') }}</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="customer in result.items" :key="customer.id">
-            <td>{{ customer.name }}</td>
+            <td>
+              <strong>{{ customer.name }}</strong>
+            </td>
             <td>{{ customer.email }}</td>
-            <td>{{ customer.status }}</td>
+            <td>
+              <AppBadge :tone="customer.status === 'active' ? 'success' : 'neutral'">
+                {{ translatedCode('statuses', customer.status) }}
+              </AppBadge>
+            </td>
           </tr>
         </tbody>
-      </table>
-      <p v-if="!result.items.length">No matching customer accounts.</p>
+      </AppTable>
+      <AppEmptyState v-else :title="t('support.empty')" icon="search" />
       <PageControls
         :page="result.page"
         :page-size="result.pageSize"
         :total="result.total"
         @change="load"
-    /></template>
-  </section>
+      />
+    </template>
+  </AppCard>
 </template>
