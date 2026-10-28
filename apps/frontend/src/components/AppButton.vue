@@ -23,6 +23,7 @@ withDefaults(
       :name="busy ? 'loading' : icon!"
       :class="{ spin: busy }"
       :size="18"
-    /><slot />
+    />
+    <slot />
   </button>
 </template>

@@ -54,8 +54,8 @@ onMounted(sync)
 onBeforeUnmount(() => dialog.value?.close())
 </script>
 <template>
-  <Teleport to="body"
-    ><dialog
+  <Teleport to="body">
+    <dialog
       ref="dialog"
       :class="['app-dialog', { 'app-drawer': drawer, 'drawer-left': side === 'left' }]"
       :aria-labelledby="titleId"
@@ -78,6 +78,7 @@ onBeforeUnmount(() => dialog.value?.close())
         </button>
       </header>
       <div class="dialog-content"><slot v-if="open" /></div>
-      <footer v-if="$slots.footer" class="dialog-footer"><slot name="footer" /></footer></dialog
-  ></Teleport>
+      <footer v-if="$slots.footer" class="dialog-footer"><slot name="footer" /></footer>
+    </dialog>
+  </Teleport>
 </template>

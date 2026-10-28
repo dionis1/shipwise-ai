@@ -12,9 +12,11 @@ const { t } = useI18n()
       <h1>{{ title }}</h1>
       <p v-if="description">{{ description }}</p>
     </div>
-    <AppBadge tone="success" class="phase-badge"
-      >{{ t('common.phase') }}<span aria-hidden="true"> · </span
-      >{{ t('common.foundation') }}</AppBadge
-    ><slot />
+    <AppBadge tone="success" class="phase-badge">
+      {{ t('common.phase') }}
+      <span aria-hidden="true">·</span>
+      {{ t('common.foundation') }}
+    </AppBadge>
+    <slot />
   </header>
 </template>

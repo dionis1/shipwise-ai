@@ -21,6 +21,7 @@ export default ts.config(
       globals: {
         window: 'readonly',
         document: 'readonly',
+        HTMLElement: 'readonly',
         HTMLDialogElement: 'readonly',
         HTMLDetailsElement: 'readonly',
         Event: 'readonly',

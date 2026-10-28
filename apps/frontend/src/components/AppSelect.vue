@@ -6,8 +6,8 @@ const id = useId()
 </script>
 <template>
   <div :class="['field', { 'compact-select': compact }]">
-    <label :for="id" :class="{ 'sr-only': compact }">{{ label }}</label
-    ><select :id="id" v-model="model" :disabled="disabled">
+    <label :for="id" :class="{ 'sr-only': compact }">{{ label }}</label>
+    <select :id="id" v-model="model" :disabled="disabled">
       <slot />
     </select>
   </div>

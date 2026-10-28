@@ -33,11 +33,11 @@ async function change(value: string) {
 </script>
 <template>
   <div class="language-control" data-testid="language-switcher">
-    <AppSelect v-model="choice" :label="t('common.language')" compact :disabled="busy"
-      ><option value="en" lang="en">{{ t('languages.en') }}</option>
+    <AppSelect v-model="choice" :label="t('common.language')" compact :disabled="busy">
+      <option value="en" lang="en">{{ t('languages.en') }}</option>
       <option value="de" lang="de">{{ t('languages.de') }}</option>
-      <option value="fr" lang="fr">{{ t('languages.fr') }}</option></AppSelect
-    >
+      <option value="fr" lang="fr">{{ t('languages.fr') }}</option>
+    </AppSelect>
     <p v-if="error" role="alert" class="field-error">{{ error }}</p>
   </div>
 </template>

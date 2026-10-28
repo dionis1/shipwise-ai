@@ -6,12 +6,15 @@ const { t } = useI18n()
 </script>
 <template>
   <p v-if="loading" role="status" class="feedback feedback-info">
-    <AppIcon name="loading" class="spin" />{{ t('common.loading') }}
+    <AppIcon name="loading" class="spin" />
+    {{ t('common.loading') }}
   </p>
   <p v-if="error" role="alert" class="feedback feedback-error">
-    <AppIcon name="warning" />{{ error }}
+    <AppIcon name="warning" />
+    {{ error }}
   </p>
   <p v-if="success && !loading" role="status" class="feedback feedback-success">
-    <AppIcon name="check" />{{ success }}
+    <AppIcon name="check" />
+    {{ success }}
   </p>
 </template>

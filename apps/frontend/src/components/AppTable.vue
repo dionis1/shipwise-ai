@@ -5,9 +5,7 @@ defineProps<{ caption: string }>()
   <div class="table-wrap">
     <table class="app-table">
       <caption class="sr-only">
-        {{
-          caption
-        }}
+        {{ caption }}
       </caption>
       <slot />
     </table>

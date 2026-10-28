@@ -39,21 +39,25 @@ async function logout() {
 <template>
   <details ref="menu" class="user-menu" @keydown.esc.prevent="escape">
     <summary :aria-label="t('common.accountMenu')">
-      <span class="user-avatar">{{ session.user?.name.slice(0, 1) }}</span
-      ><span class="user-info"
-        ><strong>{{ session.user?.name }}</strong
-        ><small>{{
-          session.user?.roles.map((role) => translatedCode('roles', role)).join(', ')
-        }}</small></span
-      ><AppIcon name="down" :size="16" />
+      <span class="user-avatar">{{ session.user?.name.slice(0, 1) }}</span>
+      <span class="user-info">
+        <strong>{{ session.user?.name }}</strong>
+        <small>
+          {{ session.user?.roles.map((role) => translatedCode('roles', role)).join(', ') }}
+        </small>
+      </span>
+      <AppIcon name="down" :size="16" />
     </summary>
     <div class="user-menu-panel">
       <strong>{{ session.user?.name }}</strong>
       <p>{{ session.user?.email }}</p>
-      <RouterLink v-if="session.user?.kind === 'customer'" to="/app/settings"
-        ><AppIcon name="settings" />{{ t('navigation.settings') }}</RouterLink
-      ><button :disabled="busy" type="button" @click="logout">
-        <AppIcon name="logout" />{{ t('auth.logout') }}
+      <RouterLink v-if="session.user?.kind === 'customer'" to="/app/settings">
+        <AppIcon name="settings" />
+        {{ t('navigation.settings') }}
+      </RouterLink>
+      <button :disabled="busy" type="button" @click="logout">
+        <AppIcon name="logout" />
+        {{ t('auth.logout') }}
       </button>
       <p v-if="error" role="alert" class="field-error">{{ error }}</p>
     </div>

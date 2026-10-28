@@ -28,9 +28,11 @@ const id = useId()
 </script>
 <template>
   <div class="field">
-    <label :for="id"
-      >{{ label }}<span v-if="required" class="required-marker" aria-hidden="true"> *</span></label
-    ><input
+    <label :for="id">
+      {{ label }}
+      <span v-if="required" class="required-marker" aria-hidden="true">*</span>
+    </label>
+    <input
       :id="id"
       v-model="model"
       :type="type"
