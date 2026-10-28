@@ -1,0 +1,26 @@
+# Use a separate Compose project and volumes: docker compose -p shipwise-e2e -f compose.yaml -f compose.e2e.yaml ...
+services:
+  backend:
+    environment:
+      APP_ENV: e2e
+      DATABASE_URL: postgresql://shipwise:${POSTGRES_PASSWORD:-shipwise}@database:5432/shipwise_e2e?serverVersion=17&charset=utf8
+      APP_URL: http://proxy
+    volumes: ['./scripts:/scripts:ro']
+  database:
+    environment:
+      POSTGRES_DB: shipwise_e2e
+  proxy:
+    ports: !override []
+  mailpit:
+    ports: !override []
+  playwright:
+    image: mcr.microsoft.com/playwright:v1.64.1-noble
+    working_dir: /repo/apps/frontend
+    volumes: ['.:/repo']
+    environment:
+      E2E_BASE_URL: http://proxy
+      MAILPIT_URL: http://mailpit:8025
+      E2E_PASSWORD: ${E2E_PASSWORD:?Supply a generated E2E_PASSWORD}
+    profiles: [testing]
+    ipc: host
+    command: npm run test:e2e
