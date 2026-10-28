@@ -1,0 +1,1 @@
+<template><RouterLink to="/" class="brand"><span class="brand-icon">↗</span><span>shipwise<span class="brand-ai"> AI</span></span></RouterLink></template>
