@@ -55,4 +55,4 @@ See `README.md`, `docs/architecture/` and `docs/security/production-readiness.md
 
 Browser screenshots are generated at `apps/frontend/test-results/redesign-audit-{390,768,1440}.png` and uploaded by CI as short-lived artifacts. They are not committed. Automated checks and local browser inspection do not constitute a comprehensive accessibility, penetration or production deployment audit. Phase 1.5 remains planned and Phase 2 has not started.
 
-Remote verification for the final redesign commit will be recorded after the actual GitHub Actions run completes.
+The first remote redesign run detected PHP formatting differences in three new/edited files despite the cached local lint result. Those differences were corrected and the Composer lint script now disables its cache so local and fresh CI inspect every file. Remote verification of the correction will be recorded after execution.

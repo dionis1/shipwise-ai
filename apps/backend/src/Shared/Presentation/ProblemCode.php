@@ -31,7 +31,7 @@ final class ProblemCode
         }
 
         return match ($status) {
-            400 => 'request_invalid',401 => 'authentication_required',403 => 'forbidden',404 => 'not_found',405 => 'method_invalid',422 => 'request_invalid',429 => 'rate_limited',default => 'server_error'
+            400 => 'request_invalid',401 => 'authentication_required',403 => 'forbidden',404 => 'not_found',405 => 'method_invalid',422 => 'request_invalid',429 => 'rate_limited',default => 'server_error',
         };
     }
 }

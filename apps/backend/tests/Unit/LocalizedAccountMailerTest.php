@@ -36,6 +36,6 @@ final class LocalizedAccountMailerTest extends TestCase
 
             return true;
         }));
-        (new SymfonyAccountMailer($mailer, 'https://shipwise.test', 'accounts@shipwise.test', dirname(__DIR__, 2)))->send('recipient@example.test', $purpose, str_repeat('a',64), $locale);
+        (new SymfonyAccountMailer($mailer, 'https://shipwise.test', 'accounts@shipwise.test', dirname(__DIR__, 2)))->send('recipient@example.test', $purpose, str_repeat('a', 64), $locale);
     }
 }

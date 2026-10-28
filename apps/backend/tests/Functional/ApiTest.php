@@ -346,6 +346,6 @@ final class ApiTest extends WebTestCase
         self::assertSame('credentials_invalid', $this->body()['code']);
         $this->send('POST', '/auth/register', ['email' => 'buyer@example.test', 'name' => 'Buyer', 'password' => 'Testing-password-123!', 'roles' => ['SUPER_ADMIN']]);
         self::assertResponseStatusCodeSame(400);
-        self::assertSame('fields_invalid',$this->body()['code']);
+        self::assertSame('fields_invalid', $this->body()['code']);
     }
 }
