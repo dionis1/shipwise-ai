@@ -209,6 +209,15 @@
                     "type": "string",
                     "minLength": 12,
                     "maxLength": 128
+                  },
+                  "preferredLocale": {
+                    "type": "string",
+                    "enum": [
+                      "en",
+                      "de",
+                      "fr"
+                    ],
+                    "default": "en"
                   }
                 },
                 "required": [
@@ -1179,12 +1188,20 @@
                     "type": "string",
                     "minLength": 2,
                     "maxLength": 100
+                  },
+                  "preferredLocale": {
+                    "type": "string",
+                    "enum": [
+                      "en",
+                      "de",
+                      "fr"
+                    ],
+                    "default": "en"
                   }
                 },
-                "required": [
-                  "name"
-                ],
-                "additionalProperties": false
+                "required": [],
+                "additionalProperties": false,
+                "minProperties": 1
               }
             }
           }
@@ -1636,6 +1653,15 @@
                     "items": {
                       "type": "string"
                     }
+                  },
+                  "preferredLocale": {
+                    "type": "string",
+                    "enum": [
+                      "en",
+                      "de",
+                      "fr"
+                    ],
+                    "default": "en"
                   }
                 },
                 "required": [
@@ -2867,6 +2893,15 @@
           },
           "audit": {
             "$ref": "#/components/schemas/AuditPage"
+          },
+          "preferredLocale": {
+            "type": "string",
+            "enum": [
+              "en",
+              "de",
+              "fr"
+            ],
+            "default": "en"
           }
         },
         "required": [
@@ -2877,7 +2912,8 @@
           "status",
           "createdAt",
           "roles",
-          "permissions"
+          "permissions",
+          "preferredLocale"
         ],
         "additionalProperties": false
       },
@@ -2995,6 +3031,10 @@
           },
           "correlationId": {
             "type": "string"
+          },
+          "code": {
+            "type": "string",
+            "description": "Stable language-neutral error code; clients translate this value."
           }
         },
         "required": [

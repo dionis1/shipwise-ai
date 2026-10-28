@@ -15,18 +15,20 @@ final class Accounts
     {
     }
 
-    public function register(string $email, string $name, string $password): void
+    public function register(string $email, string $name, string $password, string $preferredLocale = 'en'): void
     {
+        User::validateLocale($preferredLocale);
         User::validatePassword($password);
-        $this->transactions->run(function () use ($email, $name, $password) {
+        $this->transactions->run(function () use ($email, $name, $password, $preferredLocale) {
             if ($this->users->byEmail($email)) {
                 return;
             }
             $user = new User($email, $name, '');
+            $user->setPreferredLocale($preferredLocale);
             $user->changePassword($this->hasher->hash($user, $password));
             $this->users->save($user);
             $this->access->assign($user->id(), ['CUSTOMER']);
-            $this->mailer->send($user->email(), 'verify', $this->tokens->issue($user->id(), 'verify', 86400));
+            $this->mailer->send($user->email(), 'verify', $this->tokens->issue($user->id(), 'verify', 86400), $user->preferredLocale());
             $this->audit->record($user->id(), 'account.registered', $user->id());
         });
     }
@@ -66,16 +68,21 @@ final class Accounts
         $this->transactions->run(function () use ($email) {
             $user = $this->users->byEmail($email);
             if ($user && $user->status() === 'active') {
-                $this->mailer->send($user->email(), 'reset', $this->tokens->issue($user->id(), 'reset', 3600));
+                $this->mailer->send($user->email(), 'reset', $this->tokens->issue($user->id(), 'reset', 3600), $user->preferredLocale());
                 $this->audit->record(null, 'account.reset_requested', $user->id());
             }
         });
     }
 
-    public function profile(User $user, string $name): void
+    public function profile(User $user, ?string $name, ?string $preferredLocale = null): void
     {
-        $this->transactions->run(function () use ($user, $name) {
-            $user->rename($name);
+        $this->transactions->run(function () use ($user, $name, $preferredLocale) {
+            if ($name !== null) {
+                $user->rename($name);
+            }
+            if ($preferredLocale !== null) {
+                $user->setPreferredLocale($preferredLocale);
+            }
             $this->users->save($user);
             $this->audit->record($user->id(), 'account.profile_updated', $user->id());
         });

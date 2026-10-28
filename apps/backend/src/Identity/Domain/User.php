@@ -14,6 +14,7 @@ class User
     private string $kind;
     private string $status;
     private int $sessionVersion = 1;
+    private string $preferredLocale = 'en';
     private \DateTimeImmutable $createdAt;
 
     public function __construct(string $email, string $name, string $passwordHash, string $kind = 'customer')
@@ -80,6 +81,24 @@ class User
     public function createdAt(): \DateTimeImmutable
     {
         return $this->createdAt;
+    }
+
+    public function preferredLocale(): string
+    {
+        return $this->preferredLocale;
+    }
+
+    public static function validateLocale(string $locale): void
+    {
+        if (!in_array($locale, ['en', 'de', 'fr'], true)) {
+            throw new RuleViolation('Unsupported locale.');
+        }
+    }
+
+    public function setPreferredLocale(string $locale): void
+    {
+        self::validateLocale($locale);
+        $this->preferredLocale = $locale;
     }
 
     public function rename(string $name): void

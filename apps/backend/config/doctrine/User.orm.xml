@@ -9,5 +9,6 @@
   <field name="status" type="string" length="32"/>
   <field name="sessionVersion" column="session_version" type="integer"/>
   <field name="createdAt" column="created_at" type="datetimetz_immutable"/>
+ <field name="preferredLocale" column="preferred_locale" type="string" length="2"/>
  </entity>
 </doctrine-mapping>

@@ -44,6 +44,6 @@ final class LoginResponder implements AuthenticationSuccessHandlerInterface, Aut
 
     private function problem(string $detail, int $status): JsonResponse
     {
-        return new JsonResponse(['type' => 'about:blank', 'title' => 'Unauthorized', 'status' => $status, 'detail' => $detail], $status, ['Content-Type' => 'application/problem+json']);
+        return new JsonResponse(['code' => \App\Shared\Presentation\ProblemCode::of($detail, $status), 'type' => 'about:blank', 'title' => 'Unauthorized', 'status' => $status, 'detail' => $detail], $status, ['Content-Type' => 'application/problem+json']);
     }
 }

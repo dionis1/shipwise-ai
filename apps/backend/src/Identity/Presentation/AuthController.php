@@ -36,8 +36,8 @@ final class AuthController extends AbstractController
     #[Route('/auth/register', methods: ['POST'])]
     public function register(Request $request): JsonResponse
     {
-        $input = Input::from($request, $this->validator, ['email', 'name', 'password']);
-        $this->accounts->register($input->email(), $input->string('name', 2, 100), $input->string('password', 12, 128));
+        $input = Input::from($request, $this->validator, ['email', 'name', 'password', 'preferredLocale']);
+        $this->accounts->register($input->email(), $input->string('name', 2, 100), $input->string('password', 12, 128), $input->has('preferredLocale') ? $input->string('preferredLocale', 2, 2) : 'en');
 
         return $this->json(['message' => 'If eligible, check your email to continue.'], 202);
     }
@@ -104,9 +104,12 @@ final class AuthController extends AbstractController
     public function update(Request $request): JsonResponse
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
-        $input = Input::from($request, $this->validator, ['name']);
+        $input = Input::from($request, $this->validator, ['name', 'preferredLocale']);
+        if (!$input->has('name') && !$input->has('preferredLocale')) {
+            throw new \Symfony\Component\HttpKernel\Exception\BadRequestHttpException('No profile fields supplied.');
+        }
         $user = $this->principal()->account;
-        $this->accounts->profile($user, $input->string('name', 2, 100));
+        $this->accounts->profile($user, $input->has('name') ? $input->string('name', 2, 100) : null, $input->has('preferredLocale') ? $input->string('preferredLocale', 2, 2) : null);
 
         return $this->json($this->profiles->of($user));
     }

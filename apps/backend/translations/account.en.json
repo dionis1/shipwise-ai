@@ -1,0 +1,20 @@
+{
+  "verify": {
+    "subject": "Verify your ShipWise email",
+    "intro": "Confirm your email address to activate your account.",
+    "expiry": "This single-use link expires in 24 hours.",
+    "ignore": "If you did not expect this message, you can safely ignore it."
+  },
+  "reset": {
+    "subject": "Reset your ShipWise password",
+    "intro": "Choose a new password using this secure link.",
+    "expiry": "This single-use link expires in one hour.",
+    "ignore": "If you did not expect this message, you can safely ignore it."
+  },
+  "invite": {
+    "subject": "You are invited to ShipWise",
+    "intro": "You have been invited to the ShipWise team. Set your password to accept.",
+    "expiry": "This single-use invitation expires in 48 hours.",
+    "ignore": "If you did not expect this message, you can safely ignore it."
+  }
+}

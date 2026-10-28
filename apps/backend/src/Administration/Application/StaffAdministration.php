@@ -19,19 +19,21 @@ final class StaffAdministration
     }
 
     /** @param list<string> $roles */
-    public function invite(User $actor, string $email, string $name, array $roles): User
+    public function invite(User $actor, string $email, string $name, array $roles, string $preferredLocale = 'en'): User
     {
         $this->requireSuperAdmin($actor);
         RolePolicy::validateStaffRoles($roles);
+        User::validateLocale($preferredLocale);
 
-        return $this->transactions->run(function () use ($actor, $email, $name, $roles) {
+        return $this->transactions->run(function () use ($actor, $email, $name, $roles, $preferredLocale) {
             if ($this->users->byEmail($email)) {
                 throw new RuleViolation('An account with this email already exists.');
             }
             $user = new User($email, $name, '', 'staff');
+            $user->setPreferredLocale($preferredLocale);
             $this->users->save($user);
             $this->access->assign($user->id(), $roles);
-            $this->mailer->send($email, 'invite', $this->tokens->issue($user->id(), 'invite', 172800));
+            $this->mailer->send($email, 'invite', $this->tokens->issue($user->id(), 'invite', 172800), $user->preferredLocale());
             $this->audit->record($actor->id(), 'staff.invited', $user->id(), ['roles' => implode(',', $roles)]);
 
             return $user;

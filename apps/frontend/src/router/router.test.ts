@@ -22,7 +22,7 @@ describe('permission-aware routes', () => {
       email: 'f@example.test',
       name: 'Finance',
       status: 'active',
-      kind: 'staff',
+      kind: 'staff', preferredLocale: 'en',
       createdAt: '',
       roles: ['FINANCE_MANAGER'],
       permissions: ['finance.dashboard.view'],
