@@ -1196,7 +1196,7 @@
                       "de",
                       "fr"
                     ],
-                    "default": "en"
+                    "description": "Preserves the current preference when omitted."
                   }
                 },
                 "required": [],
@@ -1661,7 +1661,7 @@
                       "de",
                       "fr"
                     ],
-                    "default": "en"
+                    "description": "Defaults to the inviting administrator\u2019s stored locale when omitted."
                   }
                 },
                 "required": [

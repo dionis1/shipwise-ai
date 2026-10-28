@@ -34,7 +34,10 @@ export const i18n = createI18n({
 })
 export function setLocale(locale: Locale) {
   i18n.global.locale.value = locale
-  if (typeof document !== 'undefined') document.documentElement.lang = locale
+  if (typeof document !== 'undefined') {
+    document.documentElement.lang = locale
+    document.title = i18n.global.t('common.documentTitle')
+  }
   try {
     localStorage.setItem(preferenceKey, locale)
   } catch {

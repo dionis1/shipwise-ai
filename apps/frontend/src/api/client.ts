@@ -23,7 +23,11 @@ export async function api<T>(path: string, method = 'GET', data?: unknown): Prom
   if (method !== 'GET') {
     const response = await fetch('/api/v1/auth/csrf', { credentials: 'same-origin' })
     if (!response.ok)
-      throw new ApiError('Unable to initialize a secure request.', response.status, 'csrf_invalid')
+      throw new ApiError(
+        'Unable to initialize a secure request.',
+        response.status,
+        response.status === 403 ? 'csrf_invalid' : 'server_error',
+      )
     const csrf: components['schemas']['Csrf'] = await response.json()
     headers['X-CSRF-Token'] = csrf.token
     headers['Content-Type'] = 'application/json'

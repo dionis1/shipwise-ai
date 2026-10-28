@@ -48,6 +48,7 @@ describe('internationalization', () => {
   it('updates the document language and stores only a non-sensitive preference', () => {
     setLocale('de')
     expect(document.documentElement.lang).toBe('de')
+    expect(document.title).toContain('Smarter versenden')
     expect(localStorage.getItem('shipwise.locale')).toBe('de')
     expect(localStorage.length).toBe(1)
   })
@@ -64,6 +65,16 @@ describe('internationalization', () => {
     expect(formatNumber(1234.5)).toBe('1.234,5')
     setLocale('fr')
     expect(formatNumber(1234.5)).toMatch(/1.234,5/)
+  })
+  it('uses natural singular and plural result labels', () => {
+    for (const [locale, expected] of [
+      ['en', '1 result'],
+      ['de', '1 Ergebnis'],
+      ['fr', '1 résultat'],
+    ] as const) {
+      setLocale(locale)
+      expect(i18n.global.t('common.results', { count: formatNumber(1) }, 1)).toBe(expected)
+    }
   })
   it('reports language-neutral validation codes for translated form feedback', () => {
     expect(

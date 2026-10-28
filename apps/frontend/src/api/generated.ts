@@ -1397,7 +1397,7 @@ export interface operations {
                 "application/json": {
                     name?: string;
                     /**
-                     * @default en
+                     * @description Preserves the current preference when omitted.
                      * @enum {string}
                      */
                     preferredLocale?: "en" | "de" | "fr";
@@ -1725,7 +1725,7 @@ export interface operations {
                     name: string;
                     roles: string[];
                     /**
-                     * @default en
+                     * @description Defaults to the inviting administrator’s stored locale when omitted.
                      * @enum {string}
                      */
                     preferredLocale?: "en" | "de" | "fr";

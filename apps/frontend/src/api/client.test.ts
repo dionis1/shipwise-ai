@@ -32,7 +32,10 @@ describe('API transport', () => {
   it('does not send a write when CSRF initialization fails', async () => {
     const fetcher = vi.fn().mockResolvedValue(new Response('{}', { status: 503 }))
     vi.stubGlobal('fetch', fetcher)
-    await expect(api('/me', 'PATCH', {})).rejects.toThrow('Unable to initialize')
+    await expect(api('/me', 'PATCH', {})).rejects.toMatchObject({
+      status: 503,
+      code: 'server_error',
+    })
     expect(fetcher).toHaveBeenCalledTimes(1)
   })
   it('formats minor units according to the currency', () => {
