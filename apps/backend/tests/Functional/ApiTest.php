@@ -297,4 +297,13 @@ final class ApiTest extends WebTestCase
         $this->client->request('GET', '/api/v1/admin/audit-events');
         self::assertResponseStatusCodeSame(401);
     }
+
+    public function testDemoAccountsAreRefusedOutsideDevelopment(): void
+    {
+        $application = new \Symfony\Bundle\FrameworkBundle\Console\Application(static::$kernel);
+        $tester = new \Symfony\Component\Console\Tester\CommandTester($application->find('app:seed-demo-users'));
+        self::assertSame(1, $tester->execute([]));
+        self::assertStringContainsString('only in the dev environment', $tester->getDisplay());
+        self::assertSame(0, (int) $this->db()->fetchOne('SELECT COUNT(*) FROM users'));
+    }
 }
