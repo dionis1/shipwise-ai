@@ -18,7 +18,16 @@ export default ts.config(
   {
     files: ['**/*.vue'],
     languageOptions: {
-      globals: { window: 'readonly', URLSearchParams: 'readonly' },
+      globals: {
+        window: 'readonly',
+        document: 'readonly',
+        HTMLDialogElement: 'readonly',
+        HTMLDetailsElement: 'readonly',
+        Event: 'readonly',
+        KeyboardEvent: 'readonly',
+        Node: 'readonly',
+        URLSearchParams: 'readonly',
+      },
       parserOptions: { parser: ts.parser },
     },
     rules: {

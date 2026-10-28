@@ -13,14 +13,18 @@
     "api:generate": "openapi-typescript ../../docs/api/openapi.json -o src/api/generated.ts",
     "api:validate": "redocly lint ../../docs/api/openapi.json",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "i18n:check": "node scripts/check-i18n.mjs"
   },
   "dependencies": {
+    "lucide-vue-next": "^1.0.0",
     "pinia": "^3.0.3",
     "vue": "^3.5.22",
+    "vue-i18n": "^11.4.16",
     "vue-router": "^4.6.3"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
     "@eslint/js": "^9.38.0",
     "@playwright/test": "^1.56.1",
     "@redocly/cli": "^2.9.0",
