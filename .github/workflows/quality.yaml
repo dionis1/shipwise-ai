@@ -1,0 +1,82 @@
+name: Quality gates
+on:
+  pull_request:
+  push:
+    branches: [main, 'feat/**', 'fix/**', 'chore/**']
+permissions:
+  contents: read
+concurrency:
+  group: quality-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure local container identities
+        run: |
+          echo "LOCAL_UID=$(id -u)" >> "$GITHUB_ENV"
+          echo "LOCAL_GID=$(id -g)" >> "$GITHUB_ENV"
+          cp .env.example .env
+          cp apps/backend/.env.example apps/backend/.env
+      - name: Build PHP and install locked dependencies
+        run: |
+          docker compose build backend
+          docker compose run --rm --no-deps --user "$(id -u):$(id -g)" -e COMPOSER_HOME=/tmp/composer backend composer install --no-interaction --prefer-dist
+          docker compose up -d database redis mailpit backend
+      - name: Migrate and test isolated PostgreSQL database
+        run: |
+          make migrate
+          make backend-test
+      - name: Validate backend quality
+        run: |
+          docker compose exec -T --user "$(id -u):$(id -g)" backend composer validate --strict
+          docker compose exec -T --user "$(id -u):$(id -g)" backend composer analyse
+          docker compose exec -T --user "$(id -u):$(id -g)" backend composer lint
+          docker compose exec -T --user "$(id -u):$(id -g)" backend php bin/console lint:container
+          docker compose exec -T --user "$(id -u):$(id -g)" backend php bin/console lint:yaml config
+          docker compose exec -T --user "$(id -u):$(id -g)" backend php bin/console doctrine:schema:validate --skip-sync
+          docker compose exec -T --user "$(id -u):$(id -g)" backend php bin/console debug:router --format=json > /tmp/routes.json
+          python3 scripts/check-api-routes.py /tmp/routes.json
+          docker compose exec -T --user "$(id -u):$(id -g)" -e COMPOSER_HOME=/tmp/composer backend composer audit
+      - name: Stop services
+        if: always()
+        run: docker compose down --volumes
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: apps/frontend/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - run: npm run api:validate
+      - run: npm run api:generate && git diff --exit-code -- src/api/generated.ts
+      - run: npm audit --audit-level=moderate
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure container identities
+        run: |
+          echo "LOCAL_UID=$(id -u)" >> "$GITHUB_ENV"
+          echo "LOCAL_GID=$(id -g)" >> "$GITHUB_ENV"
+          cp .env.example .env
+          cp apps/backend/.env.example apps/backend/.env
+      - name: Install locked dependencies
+        run: |
+          docker compose build backend
+          docker compose run --rm --no-deps --user "$(id -u):$(id -g)" -e COMPOSER_HOME=/tmp/composer backend composer install --no-interaction --prefer-dist
+          docker compose run --rm --no-deps -e npm_config_cache=/tmp/npm frontend npm ci
+      - name: Run isolated browser workflows
+        run: make e2e
