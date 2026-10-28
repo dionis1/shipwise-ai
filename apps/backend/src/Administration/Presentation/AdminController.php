@@ -64,7 +64,7 @@ final class AdminController extends AbstractController
             $data['audit'] = $this->audit->list(['target_id' => $id], 1);
         }
 
-return $this->json($data);
+        return $this->json($data);
     }
 
     #[Route('/staff/{id}', methods: ['PATCH'])]
@@ -128,9 +128,18 @@ return $this->json($data);
         $this->denyAccessUnlessGranted('audit.read');
         $filters = $this->filters($r, ['action', 'actor_id', 'target_id', 'from', 'to']);
         foreach (['from', 'to'] as $key) {
-            if (!empty($filters[$key]) && !preg_match('/^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}Z)?$/D', $filters[$key])) {
-                throw new \Symfony\Component\HttpKernel\Exception\BadRequestHttpException('Use an ISO 8601 date filter.');
+            if ($filters[$key] === '') {
+                continue;
             }
+            $format = strlen($filters[$key]) === 10 ? 'Y-m-d' : 'Y-m-d\\TH:i:s\\Z';
+            $date = \DateTimeImmutable::createFromFormat('!'.$format, $filters[$key], new \DateTimeZone('UTC'));
+            if (!$date || $date->format($format) !== $filters[$key]) {
+                throw new \Symfony\Component\HttpKernel\Exception\BadRequestHttpException('Use a valid ISO 8601 date or UTC timestamp filter.');
+            }
+            if ($key === 'to' && strlen($filters[$key]) === 10) {
+                $date = $date->setTime(23, 59, 59);
+            }
+            $filters[$key] = $date->format('c');
         }
 
         return $this->json($this->audit->list($filters, $this->page($r)));
@@ -171,7 +180,7 @@ return $this->json($data);
             throw $this->createAccessDeniedException();
         }
 
-return $user->account;
+        return $user->account;
     }
 
     private function target(string $id): \App\Identity\Domain\User
@@ -181,7 +190,7 @@ return $user->account;
             throw $this->createNotFoundException('Staff account not found.');
         }
 
-return $user;
+        return $user;
     }
 
     private function page(Request $r): int
@@ -191,13 +200,13 @@ return $user;
 
     /** @param list<string> $keys
      * @return array<string,string> */
-    private function filters(Request $r,array $keys): array
+    private function filters(Request $r, array $keys): array
     {
         $result = [];
         foreach ($keys as $key) {
-            $result[$key] = substr($r->query->getString($key),0,180);
+            $result[$key] = substr($r->query->getString($key), 0, 180);
         }
 
-return $result;
+        return $result;
     }
 }

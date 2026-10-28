@@ -248,6 +248,8 @@ final class ApiTest extends WebTestCase
         $this->login('AUDITOR');
         $this->client->request('GET', '/api/v1/admin/audit-events?from=invalid');
         self::assertResponseStatusCodeSame(400);
+        $this->client->request('GET', '/api/v1/admin/audit-events?from=2026-02-31');
+        self::assertResponseStatusCodeSame(400);
         $this->client->request('GET', '/api/v1/admin/audit-events?action=auth.login&page=1');
         self::assertResponseIsSuccessful();
         self::assertSame(20, $this->body()['pageSize']);
