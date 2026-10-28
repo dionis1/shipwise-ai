@@ -19,7 +19,7 @@ The project lockfile lists `symfony/mime v8.0.15`, which is newer than the vendo
 
 ## Deliberately narrow mitigation
 
-Until the advisory metadata is corrected, `composer.json` uses `config.policy.advisories.ignore-id` on **this one specific PKSA ID**, setting `on-audit: false`, with an explicit rationale. This prevents the inaccurate advisory entry from failing the audit. It **does not disable global security audits**, ignore all medium-severity vulnerabilities, or turn off dependency security blocking. New and unrelated advisories must still fail the CI audit.
+Until the advisory metadata is corrected, `composer.json` uses the compatible `config.audit.ignore` entry for **this one specific PKSA ID**, setting `apply: audit`, with an explicit rationale. This prevents the inaccurate advisory entry from failing the audit on the Composer 2.x version packaged in our Docker build. Composer's newer `config.policy.advisories.ignore-id` setting was initially attempted but was not honored in CI. The exception is audit-only and does not exempt dependency updates from security blocking. It **does not disable global security audits**, ignore all medium-severity vulnerabilities, or turn off dependency security blocking. New and unrelated advisories must still fail the CI audit.
 
 Do not downgrade Symfony MIME to an actually vulnerable version. Do not remove the audit step, use `--no-audit`, or apply a blanket `policy.advisories.audit=report` override.
 
