@@ -15,6 +15,6 @@ final class ProfileView
      * @return array<string,mixed> */
     public function of(User $user): array
     {
-        return ['id' => $user->id(), 'email' => $user->email(), 'name' => $user->name(), 'kind' => $user->kind(), 'status' => $user->status(), 'createdAt' => $user->createdAt()->format('c'), 'roles' => $this->access->roles($user->id()), 'permissions' => $this->access->permissions($user->id())];
+        return ['id' => $user->id(), 'email' => $user->email(), 'name' => $user->name(), 'kind' => $user->kind(), 'status' => $user->status(), 'preferredLocale' => $user->preferredLocale(), 'createdAt' => $user->createdAt()->format('c'), 'roles' => $this->access->roles($user->id()), 'permissions' => $this->access->permissions($user->id())];
     }
 }

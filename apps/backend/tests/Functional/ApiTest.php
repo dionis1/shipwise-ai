@@ -308,4 +308,44 @@ final class ApiTest extends WebTestCase
         self::assertStringContainsString('only in the dev environment', $tester->getDisplay());
         self::assertSame(0, (int) $this->db()->fetchOne('SELECT COUNT(*) FROM users'));
     }
+
+    public function testPreferredLocalePersistsWithoutRevokingTheSession(): void
+    {
+        $id = $this->fixture();
+        $this->login('CUSTOMER');
+        $version = $this->db()->fetchOne('SELECT session_version FROM users WHERE id = ?', [$id]);
+        $this->send('PATCH', '/me', ['preferredLocale' => 'fr']);
+        self::assertResponseIsSuccessful();
+        self::assertSame('fr', $this->body()['preferredLocale']);
+        $this->client->request('GET', '/api/v1/me');
+        self::assertResponseIsSuccessful();
+        self::assertSame('fr', $this->body()['preferredLocale']);
+        self::assertSame($version, $this->db()->fetchOne('SELECT session_version FROM users WHERE id = ?', [$id]));
+        $this->send('PATCH', '/me', ['preferredLocale' => 'xx']);
+        self::assertResponseStatusCodeSame(422);
+        self::assertSame('locale_invalid', $this->body()['code']);
+        self::assertSame('fr', $this->db()->fetchOne('SELECT preferred_locale FROM users WHERE id = ?', [$id]));
+    }
+
+    public function testRegistrationAndInvitationStoreRequestedEmailLocale(): void
+    {
+        $this->send('POST', '/auth/register', ['email' => 'localized@example.test', 'name' => 'Localized Person', 'password' => 'Testing-password-123!', 'preferredLocale' => 'de']);
+        self::assertResponseStatusCodeSame(202);
+        self::assertSame('de', $this->db()->fetchOne("SELECT preferred_locale FROM users WHERE email='localized@example.test'"));
+        $this->fixture('SUPER_ADMIN');
+        $this->login('SUPER_ADMIN');
+        $this->send('POST', '/admin/staff/invitations', ['email' => 'french@example.test', 'name' => 'Invited Person', 'roles' => ['QA_ENGINEER'], 'preferredLocale' => 'fr']);
+        self::assertResponseStatusCodeSame(201);
+        self::assertSame('fr', $this->body()['preferredLocale']);
+    }
+
+    public function testStableProblemCodesDoNotExposeAccountExistence(): void
+    {
+        $this->send('POST', '/auth/login', ['email' => 'missing@example.test', 'password' => 'unknown-password']);
+        self::assertResponseStatusCodeSame(401);
+        self::assertSame('credentials_invalid', $this->body()['code']);
+        $this->send('POST', '/auth/register', ['email' => 'buyer@example.test', 'name' => 'Buyer', 'password' => 'Testing-password-123!', 'roles' => ['SUPER_ADMIN']]);
+        self::assertResponseStatusCodeSame(400);
+        self::assertSame('fields_invalid', $this->body()['code']);
+    }
 }

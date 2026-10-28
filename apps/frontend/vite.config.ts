@@ -9,5 +9,10 @@ export default defineConfig({
     hmr: { clientPort: 8080 },
     proxy: { '/api': 'http://proxy' },
   },
-  test: { environment: 'jsdom', include: ['src/**/*.test.ts'], restoreMocks: true },
+  test: {
+    environment: 'jsdom',
+    setupFiles: ['src/test-setup.ts'],
+    include: ['src/**/*.test.ts'],
+    restoreMocks: true,
+  },
 })

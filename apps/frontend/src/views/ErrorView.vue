@@ -1,8 +1,16 @@
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+import PublicHeader from '../components/PublicHeader.vue'
+import AppEmptyState from '../components/AppEmptyState.vue'
+const { t } = useI18n()
+</script>
 <template>
-  <main class="error-page">
-    <span class="eyebrow">WORKSPACE UNAVAILABLE</span>
-    <h1>This page isn’t available.</h1>
-    <p>You may need to sign in with an authorized account, or try again later.</p>
-    <RouterLink class="button" to="/login">Back to sign in</RouterLink>
+  <PublicHeader />
+  <main id="main-content" class="error-page">
+    <AppEmptyState :title="t('error.title')" :description="t('error.description')" icon="lock">
+      <RouterLink class="app-button button-primary" to="/login">
+        {{ t('auth.backLogin') }}
+      </RouterLink>
+    </AppEmptyState>
   </main>
 </template>

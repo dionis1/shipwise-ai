@@ -1,5 +1,5 @@
 # Engineering rules
-All source, identifiers, comments, UI text, documentation, tests and commit messages must be English. German identifiers, comments and documentation are prohibited.
+Source code, identifiers, comments, documentation, API contracts, tests and commit messages must remain English. User-facing copy must use English, German and French translation resources. German and French are permitted in translation files and localized email templates only. Do not hardcode user-facing copy in Vue components.
 Preserve the modular monolith and dependency direction: domain → application ports ← infrastructure; presentation translates HTTP. Domain rules must not depend on Symfony, Doctrine or HTTP.
 Enforce permissions on the backend; navigation is never an authorization boundary. Preserve single-use tokens, session revocation, CSRF, audit atomicity and last-administrator protection.
 Run relevant tests and update the OpenAPI contract, generated types and documentation with behavior changes. Never claim unexecuted checks passed.

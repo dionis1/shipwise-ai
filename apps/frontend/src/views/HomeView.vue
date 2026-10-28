@@ -1,69 +1,61 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+import PublicHeader from '../components/PublicHeader.vue'
+import AppIcon from '../components/AppIcon.vue'
+import AppCard from '../components/AppCard.vue'
+import AppBadge from '../components/AppBadge.vue'
+import ShipIllustration from '../components/ShipIllustration.vue'
 import BrandMark from '../components/BrandMark.vue'
+const { t } = useI18n()
 </script>
 <template>
   <div class="public-page">
-    <header class="public-nav">
-      <BrandMark />
-      <nav>
-        <a href="#approach">Our approach</a><RouterLink to="/login">Sign in</RouterLink
-        ><RouterLink class="button" to="/register">Create an account ↗</RouterLink>
-      </nav>
-    </header>
-    <main>
-      <section class="hero">
+    <PublicHeader />
+    <main id="main-content">
+      <section class="landing-hero content-width">
         <div>
-          <span class="eyebrow">A MORE CONNECTED WAY TO SHIP</span>
-          <h1>Great journeys.<br />Smarter <em>beginnings.</em></h1>
-          <p>
-            One place for your shipping journey. We're building a thoughtful way to compare
-            carriers, choose a service and keep everything in view.
-          </p>
-          <RouterLink class="button" to="/register">Set up your account <span>↗</span></RouterLink>
-          <p class="fine">
-            Account access is available now. Shipping services are coming in a future phase.
-          </p>
+          <AppBadge tone="success">{{ t('home.eyebrow') }}</AppBadge>
+          <h1>{{ t('home.title') }}</h1>
+          <p class="hero-description">{{ t('home.description') }}</p>
+          <RouterLink class="app-button button-primary hero-cta" to="/register">
+            {{ t('auth.register') }}
+            <AppIcon name="next" />
+          </RouterLink>
+          <p class="fine-print">{{ t('home.availability') }}</p>
         </div>
-        <div class="route-art" aria-hidden="true">
-          <div class="orbit one"></div>
-          <div class="orbit two"></div>
-          <span class="route-dot start"></span><span class="route-dot end"></span>
-          <div class="parcel"><span>SW</span><small>HANDLE WITH POSSIBILITY</small></div>
-          <div class="route-label">
-            A good start.<br /><strong>A world of possibilities.</strong>
+        <div class="hero-art">
+          <span class="art-orbit"></span>
+          <ShipIllustration />
+          <div class="hero-brand-note">
+            <AppIcon name="audit" :size="28" />
+            <span>{{ t('brand.tagline') }}</span>
           </div>
         </div>
       </section>
-      <section id="approach" class="approach">
-        <span class="eyebrow">BUILT ON THE RIGHT FOUNDATION</span>
-        <h2>Clarity at every step.</h2>
+      <section id="approach" class="landing-features content-width">
+        <div class="section-heading">
+          <span class="eyebrow">{{ t('home.approach') }}</span>
+          <h2>{{ t('home.clarity') }}</h2>
+        </div>
         <div class="feature-grid">
-          <article>
-            <span>01 / YOUR ACCOUNT</span>
-            <h3>A secure place to start</h3>
-            <p>
-              Create and verify your account, manage your profile and stay in control of your
-              access.
-            </p>
-          </article>
-          <article>
-            <span>02 / COMING NEXT</span>
-            <h3>More choice, less friction</h3>
-            <p>
-              Carrier comparison and shipment booking are planned. No rates or bookings are
-              available yet.
-            </p>
-          </article>
-          <article>
-            <span>03 / DESIGNED FOR TRUST</span>
-            <h3>Thoughtful by design</h3>
-            <p>
-              Clear permissions, accountable operations and a foundation built for the long journey.
-            </p>
-          </article>
+          <AppCard
+            v-for="feature in [
+              { key: 'account', icon: 'lock' },
+              { key: 'team', icon: 'staff' },
+              { key: 'future', icon: 'carriers' },
+            ]"
+            :key="feature.key"
+          >
+            <span class="feature-icon"><AppIcon :name="feature.icon" :size="26" /></span>
+            <h3>{{ t('home.' + feature.key + 'Title') }}</h3>
+            <p>{{ t('home.' + feature.key + 'Body') }}</p>
+          </AppCard>
         </div>
       </section>
     </main>
-    <footer><BrandMark /><span>Built for the journey ahead. · Phase 1</span></footer>
+    <footer class="site-footer content-width">
+      <BrandMark />
+      <span>{{ t('home.footer') }}</span>
+    </footer>
   </div>
 </template>

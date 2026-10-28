@@ -16,7 +16,7 @@ Turn the existing Phase 1 **development foundation** into a production-deployabl
 
 This phase is a **production release gate**, not permission to bypass security controls. Existing staff accounts are deliberately rejected when `APP_ENV=prod` by `AccountChecker` / `AccountProvider`; do not remove that guard until the complete mandatory staff-MFA login flow is implemented, enforced and tested in production configuration. Do not assert production readiness based solely on successful CI or a local Docker startup.
 
-All code, identifiers, documentation, UI text, tests, Git commits and pull requests must be **in English**. Changes must be split into coherent, reviewable Conventional Commits and focused pull requests.
+All code, identifiers, documentation, tests, Git commits and pull requests remain **in English**. User-facing copy follows the EN/DE/FR localization policy in AGENTS.md; translations belong in localization resources and email templates. Changes must be split into coherent, reviewable Conventional Commits and focused pull requests.
 
 ## 2. Verified starting point and current blockers
 

@@ -469,6 +469,11 @@ export interface components {
             roles: string[];
             permissions: string[];
             audit?: components["schemas"]["AuditPage"];
+            /**
+             * @default en
+             * @enum {string}
+             */
+            preferredLocale: "en" | "de" | "fr";
         };
         Staff: {
             id: string;
@@ -500,6 +505,8 @@ export interface components {
             status: number;
             detail: string;
             correlationId?: string;
+            /** @description Stable language-neutral error code; clients translate this value. */
+            code?: string;
         };
         Message: {
             message: string;
@@ -656,6 +663,11 @@ export interface operations {
                     email: string;
                     name: string;
                     password: string;
+                    /**
+                     * @default en
+                     * @enum {string}
+                     */
+                    preferredLocale?: "en" | "de" | "fr";
                 };
             };
         };
@@ -1383,7 +1395,12 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
-                    name: string;
+                    name?: string;
+                    /**
+                     * @description Preserves the current preference when omitted.
+                     * @enum {string}
+                     */
+                    preferredLocale?: "en" | "de" | "fr";
                 };
             };
         };
@@ -1707,6 +1724,11 @@ export interface operations {
                     email: string;
                     name: string;
                     roles: string[];
+                    /**
+                     * @description Defaults to the inviting administrator’s stored locale when omitted.
+                     * @enum {string}
+                     */
+                    preferredLocale?: "en" | "de" | "fr";
                 };
             };
         };

@@ -1,0 +1,20 @@
+{
+  "verify": {
+    "subject": "Bestätige deine E-Mail-Adresse bei ShipWise",
+    "intro": "Bestätige deine E-Mail-Adresse, um dein Konto zu aktivieren.",
+    "expiry": "Dieser Link ist einmal verwendbar und läuft nach 24 Stunden ab.",
+    "ignore": "Falls du diese Nachricht nicht erwartet hast, kannst du sie ignorieren."
+  },
+  "reset": {
+    "subject": "Setze dein ShipWise-Passwort zurück",
+    "intro": "Wähle über diesen sicheren Link ein neues Passwort.",
+    "expiry": "Dieser Link ist einmal verwendbar und läuft nach einer Stunde ab.",
+    "ignore": "Falls du diese Nachricht nicht erwartet hast, kannst du sie ignorieren."
+  },
+  "invite": {
+    "subject": "Du bist zu ShipWise eingeladen",
+    "intro": "Du wurdest zum ShipWise-Team eingeladen. Lege dein Passwort fest, um die Einladung anzunehmen.",
+    "expiry": "Diese Einladung ist einmal verwendbar und läuft nach 48 Stunden ab.",
+    "ignore": "Falls du diese Nachricht nicht erwartet hast, kannst du sie ignorieren."
+  }
+}

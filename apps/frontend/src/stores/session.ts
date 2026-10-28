@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { isLocale, setLocale, type Locale } from '../i18n'
 import { api, ApiError, type Profile } from '../api/client'
 export const useSession = defineStore('session', () => {
   const user = ref<Profile | null>(null)
@@ -8,6 +9,7 @@ export const useSession = defineStore('session', () => {
   async function refresh() {
     try {
       user.value = await api<Profile>('/auth/me')
+      if (isLocale(user.value.preferredLocale)) setLocale(user.value.preferredLocale)
     } catch (error) {
       if (!(error instanceof ApiError) || error.status !== 401) throw error
       user.value = null
@@ -17,6 +19,7 @@ export const useSession = defineStore('session', () => {
   }
   async function login(email: string, password: string) {
     user.value = await api<Profile>('/auth/login', 'POST', { email, password })
+    if (isLocale(user.value.preferredLocale)) setLocale(user.value.preferredLocale)
     initialized.value = true
   }
   async function logout() {
@@ -24,5 +27,8 @@ export const useSession = defineStore('session', () => {
     user.value = null
     initialized.value = true
   }
-  return { user, initialized, can, refresh, login, logout }
+  async function updateLocale(preferredLocale: Locale) {
+    user.value = await api<Profile>('/me', 'PATCH', { preferredLocale })
+  }
+  return { user, initialized, can, refresh, login, logout, updateLocale }
 })

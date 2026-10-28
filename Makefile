@@ -26,6 +26,7 @@ quality: frontend-ready
 	$(DC) exec --user $$(id -u):$$(id -g) backend php bin/console lint:yaml config
 	$(DC) exec --user $$(id -u):$$(id -g) backend php bin/console doctrine:schema:validate --skip-sync
 	$(DC) exec frontend npm run typecheck
+	$(DC) exec frontend npm run i18n:check
 	$(DC) exec frontend npm run lint
 	$(DC) exec frontend npm run format:check
 	$(DC) exec frontend npm run build

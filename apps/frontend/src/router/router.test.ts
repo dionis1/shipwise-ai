@@ -23,6 +23,7 @@ describe('permission-aware routes', () => {
       name: 'Finance',
       status: 'active',
       kind: 'staff',
+      preferredLocale: 'en',
       createdAt: '',
       roles: ['FINANCE_MANAGER'],
       permissions: ['finance.dashboard.view'],

@@ -11,6 +11,7 @@ const profile: Profile = {
   email: 'test@example.test',
   name: 'Test Person',
   kind: 'staff',
+  preferredLocale: 'en',
   status: 'active',
   createdAt: '2026-01-01T00:00:00Z',
   roles: ['FINANCE_MANAGER'],

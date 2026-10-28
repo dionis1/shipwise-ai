@@ -58,6 +58,7 @@ jobs:
       - run: npm run lint
       - run: npm run format:check
       - run: npm run typecheck
+      - run: npm run i18n:check
       - run: npm test
       - run: npm run build
       - run: npm run api:validate
@@ -80,3 +81,11 @@ jobs:
           docker compose run --rm --no-deps -e npm_config_cache=/tmp/npm frontend npm ci
       - name: Run isolated browser workflows
         run: make e2e
+      - name: Upload redesign previews
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: redesign-previews
+          path: apps/frontend/test-results/redesign-audit-*.png
+          if-no-files-found: ignore
+          retention-days: 7

@@ -1,3 +1,4 @@
+import { i18n } from '../i18n'
 import type { components } from './generated'
 export type Profile = components['schemas']['Profile']
 export type Staff = components['schemas']['Staff']
@@ -12,6 +13,7 @@ export class ApiError extends Error {
   constructor(
     message: string,
     public status: number,
+    public code = 'server_error',
   ) {
     super(message)
   }
@@ -20,7 +22,12 @@ export async function api<T>(path: string, method = 'GET', data?: unknown): Prom
   const headers: Record<string, string> = { Accept: 'application/json' }
   if (method !== 'GET') {
     const response = await fetch('/api/v1/auth/csrf', { credentials: 'same-origin' })
-    if (!response.ok) throw new ApiError('Unable to initialize a secure request.', response.status)
+    if (!response.ok)
+      throw new ApiError(
+        'Unable to initialize a secure request.',
+        response.status,
+        response.status === 403 ? 'csrf_invalid' : 'server_error',
+      )
     const csrf: components['schemas']['Csrf'] = await response.json()
     headers['X-CSRF-Token'] = csrf.token
     headers['Content-Type'] = 'application/json'
@@ -33,6 +40,23 @@ export async function api<T>(path: string, method = 'GET', data?: unknown): Prom
   })
   const body = await response.json().catch(() => ({}))
   if (!response.ok)
-    throw new ApiError(body.detail || 'The request could not be completed.', response.status)
+    throw new ApiError(
+      body.detail || 'The request could not be completed.',
+      response.status,
+      body.code ||
+        (
+          { 401: 'authentication_required', 403: 'forbidden', 429: 'rate_limited' } as Record<
+            number,
+            string
+          >
+        )[response.status] ||
+        'server_error',
+    )
   return body as T
+}
+
+export function errorMessage(error: unknown): string {
+  const code = error instanceof ApiError ? error.code : 'network_error'
+  const key = 'errors.' + code
+  return i18n.global.t(i18n.global.te(key) ? key : 'errors.server_error')
 }

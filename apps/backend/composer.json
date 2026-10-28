@@ -57,6 +57,6 @@
   "scripts": {
     "test": "phpunit",
     "analyse": "phpstan analyse --memory-limit=512M",
-    "lint": "php-cs-fixer fix --dry-run --diff"
+    "lint": "php-cs-fixer fix --dry-run --diff --using-cache=no"
   }
 }

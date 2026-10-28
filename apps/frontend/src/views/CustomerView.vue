@@ -1,25 +1,60 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { useSession } from '../stores/session'
-import { api, type Profile } from '../api/client'
-import BrandMark from '../components/BrandMark.vue'
+import { api, ApiError, type Profile } from '../api/client'
+import { useFeedback } from '../composables/useFeedback'
+import { validateFields } from '../i18n/validation'
+import { translatedCode } from '../i18n'
+import PublicHeader from '../components/PublicHeader.vue'
+import PageHeader from '../components/PageHeader.vue'
+import AppCard from '../components/AppCard.vue'
+import AppButton from '../components/AppButton.vue'
+import AppInput from '../components/AppInput.vue'
+import AppBadge from '../components/AppBadge.vue'
+import AppIcon from '../components/AppIcon.vue'
 import FeedbackBox from '../components/FeedbackBox.vue'
+import ShipIllustration from '../components/ShipIllustration.vue'
 const session = useSession(),
   route = useRoute(),
-  router = useRouter()
+  router = useRouter(),
+  { t } = useI18n()
 const name = ref(session.user?.name || ''),
   currentPassword = ref(''),
   password = ref(''),
   busy = ref(false),
-  error = ref(''),
-  success = ref('')
+  fields = ref<Record<string, string>>({}),
+  { failure, success, errorText, successText, clear } = useFeedback()
+const overview = computed(() => route.path === '/app'),
+  security = computed(() => route.path === '/app/settings')
+watch(
+  () => route.path,
+  () => {
+    clear()
+    fields.value = {}
+    currentPassword.value = ''
+    password.value = ''
+  },
+)
+function fieldError(field: string) {
+  return fields.value[field] ? t('errors.' + fields.value[field]) : undefined
+}
 async function save() {
+  clear()
+  fields.value = security.value
+    ? validateFields(
+        { currentPassword: currentPassword.value, password: password.value },
+        { currentPassword: 'currentPassword', password: 'password' },
+      )
+    : validateFields({ name: name.value }, { name: 'name' })
+  if (Object.keys(fields.value).length) {
+    failure.value = new ApiError('', 400, 'request_invalid')
+    return
+  }
   busy.value = true
-  error.value = ''
-  success.value = ''
   try {
-    if (route.path === '/app/settings') {
+    if (security.value) {
       await api('/me/password', 'POST', {
         currentPassword: currentPassword.value,
         password: password.value,
@@ -28,90 +63,113 @@ async function save() {
       await router.push('/login')
     } else {
       session.user = await api<Profile>('/me', 'PATCH', { name: name.value })
-      success.value = 'Profile saved.'
+      success.value = 'common.profileSaved'
     }
   } catch (e) {
-    error.value = e instanceof Error ? e.message : 'Unable to save.'
+    failure.value = e
   } finally {
     busy.value = false
-  }
-}
-async function logout() {
-  try {
-    await session.logout()
-    await router.push('/login')
-  } catch (e) {
-    error.value = String(e)
   }
 }
 </script>
 <template>
   <div class="customer-page">
-    <header class="public-nav">
-      <BrandMark />
-      <nav>
-        <RouterLink to="/app">Overview</RouterLink><RouterLink to="/app/profile">Profile</RouterLink
-        ><RouterLink to="/app/settings">Security</RouterLink
-        ><button class="secondary" @click="logout">Sign out</button>
-      </nav>
-    </header>
-    <main class="customer-main">
-      <span class="eyebrow">YOUR WORKSPACE</span>
-      <h1>
-        {{
-          route.path === '/app'
-            ? `Welcome, ${session.user?.name}.`
-            : route.path === '/app/profile'
-              ? 'Your profile.'
-              : 'Account security.'
-        }}
-      </h1>
-      <FeedbackBox :error="error" :success="success" /><template v-if="route.path === '/app'"
-        ><p class="lead">A good place to begin your next shipping journey.</p>
-        <div class="feature-grid">
-          <article class="panel">
-            <span class="eyebrow">ACCOUNT</span>
-            <h3>{{ session.user?.name }}</h3>
-            <p>{{ session.user?.email }}</p>
-            <span class="badge">{{ session.user?.status }}</span>
-            <p>Email verification complete</p>
-          </article>
-          <article class="panel">
-            <span class="eyebrow">COMING IN A FUTURE PHASE</span>
-            <h3>Your next shipment starts here.</h3>
-            <p>Carrier comparison and booking are not available yet.</p>
-            <button disabled>Compare shipping options</button>
-          </article>
-        </div></template
+    <PublicHeader customer />
+    <main id="main-content" class="customer-main content-width">
+      <PageHeader
+        :title="
+          overview
+            ? t('customer.welcome', { name: session.user?.name })
+            : t(security ? 'navigation.settings' : 'navigation.profile')
+        "
+        :description="
+          t(
+            overview
+              ? 'customer.description'
+              : security
+                ? 'customer.securityDescription'
+                : 'customer.profileDescription',
+          )
+        "
+        :icon="overview ? 'overview' : security ? 'lock' : 'user'"
+      />
+      <FeedbackBox :error="errorText" :success="successText" />
+      <div v-if="overview" class="customer-grid">
+        <AppCard :title="t('common.account')">
+          <div class="profile-summary">
+            <span class="user-avatar large">{{ session.user?.name.slice(0, 1) }}</span>
+            <div>
+              <h3>{{ session.user?.name }}</h3>
+              <p>{{ session.user?.email }}</p>
+            </div>
+          </div>
+          <AppBadge tone="success">
+            {{ translatedCode('statuses', session.user?.status || '') }}
+          </AppBadge>
+          <p class="verified-note">
+            <AppIcon name="check" :size="18" />
+            {{ t('customer.verified') }}
+          </p>
+          <RouterLink class="text-link" to="/app/profile">
+            {{ t('navigation.profile') }}
+            <AppIcon name="right" :size="17" />
+          </RouterLink>
+        </AppCard>
+        <AppCard class="future-shipping">
+          <AppBadge>{{ t('common.future') }}</AppBadge>
+          <ShipIllustration />
+          <h2>{{ t('customer.shippingTitle') }}</h2>
+          <p>{{ t('customer.shippingBody') }}</p>
+          <AppButton disabled>{{ t('customer.compare') }}</AppButton>
+        </AppCard>
+      </div>
+      <AppCard
+        v-else
+        class="profile-card"
+        :title="t(security ? 'common.account' : 'navigation.profile')"
       >
-      <form v-else class="panel narrow" @submit.prevent="save">
-        <template v-if="route.path === '/app/profile'"
-          ><label>Email address<input :value="session.user?.email" disabled /></label
-          ><label
-            >Full name<input
+        <form novalidate @submit.prevent="save">
+          <template v-if="!security">
+            <AppInput
+              :model-value="session.user?.email || ''"
+              :label="t('common.email')"
+              disabled
+            />
+            <AppInput
               v-model="name"
+              :label="t('common.name')"
+              :error="fieldError('name')"
               required
-              minlength="2"
-              maxlength="100" /></label></template
-        ><template v-else
-          ><label
-            >Current password<input
+              :minlength="2"
+              :maxlength="100"
+              autocomplete="name"
+            />
+          </template>
+          <template v-else>
+            <AppInput
               v-model="currentPassword"
+              :label="t('auth.currentPassword')"
+              :error="fieldError('currentPassword')"
               type="password"
               required
-              autocomplete="current-password" /></label
-          ><label
-            >New password<input
+              autocomplete="current-password"
+            />
+            <AppInput
               v-model="password"
+              :label="t('auth.newPassword')"
+              :hint="t('auth.passwordHint')"
+              :error="fieldError('password')"
               type="password"
               required
-              minlength="12"
-              maxlength="128"
+              :minlength="12"
+              :maxlength="128"
               autocomplete="new-password"
-          /></label>
-          <p class="fine">Changing your password signs out all existing sessions.</p></template
-        ><button :disabled="busy">{{ busy ? 'Saving…' : 'Save changes' }}</button>
-      </form>
+            />
+            <p class="info-note">{{ t('customer.passwordNotice') }}</p>
+          </template>
+          <AppButton type="submit" :busy="busy">{{ t('common.save') }}</AppButton>
+        </form>
+      </AppCard>
     </main>
   </div>
 </template>

@@ -32,6 +32,11 @@ final class Input
         return new self($data, $validator);
     }
 
+    public function has(string $key): bool
+    {
+        return array_key_exists($key, $this->data);
+    }
+
     public function string(string $key, int $min = 1, int $max = 255): string
     {
         $value = $this->data[$key] ?? null;

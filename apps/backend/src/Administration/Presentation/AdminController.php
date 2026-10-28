@@ -48,8 +48,8 @@ final class AdminController extends AbstractController
     public function invite(Request $r): JsonResponse
     {
         $this->denyAccessUnlessGranted('staff.invite');
-        $input = Input::from($r, $this->validator, ['email', 'name', 'roles']);
-        $user = $this->staff->invite($this->actor(), $input->email(), $input->string('name', 2, 100), $input->strings('roles'));
+        $input = Input::from($r, $this->validator, ['email', 'name', 'roles', 'preferredLocale']);
+        $user = $this->staff->invite($this->actor(), $input->email(), $input->string('name', 2, 100), $input->strings('roles'), $input->has('preferredLocale') ? $input->string('preferredLocale', 2, 2) : $this->actor()->preferredLocale());
 
         return $this->json($this->profiles->of($user), 201);
     }

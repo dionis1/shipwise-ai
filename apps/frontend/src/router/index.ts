@@ -5,38 +5,8 @@ import HomeView from '../views/HomeView.vue'
 import CustomerView from '../views/CustomerView.vue'
 import AdminView from '../views/AdminView.vue'
 import ErrorView from '../views/ErrorView.vue'
-export const adminLinks = [
-  { path: '/admin', label: 'Overview', permission: 'platform.dashboard.view', symbol: '◫' },
-  { path: '/admin/staff', label: 'Team members', permission: 'staff.read', symbol: '♧' },
-  { path: '/admin/access-control', label: 'Access control', permission: 'roles.read', symbol: '◇' },
-  {
-    path: '/admin/operations',
-    label: 'Operations',
-    permission: 'operations.dashboard.view',
-    symbol: '⇄',
-  },
-  { path: '/admin/finance', label: 'Finance', permission: 'finance.dashboard.view', symbol: '€' },
-  {
-    path: '/admin/marketing',
-    label: 'Marketing',
-    permission: 'marketing.dashboard.view',
-    symbol: '↗',
-  },
-  {
-    path: '/admin/support',
-    label: 'Customer support',
-    permission: 'support.dashboard.view',
-    symbol: '◉',
-  },
-  {
-    path: '/admin/carriers',
-    label: 'Carriers',
-    permission: 'carriers.dashboard.view',
-    symbol: '▱',
-  },
-  { path: '/admin/qa', label: 'Quality assurance', permission: 'qa.dashboard.view', symbol: '✓' },
-  { path: '/admin/audit', label: 'Audit trail', permission: 'audit.read', symbol: '≡' },
-]
+import { adminLinks } from '../app/navigation'
+export { adminLinks }
 export const router = createRouter({
   history: createWebHistory(),
   routes: [
