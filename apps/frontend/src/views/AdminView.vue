@@ -1,39 +1,84 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { api, type Dashboard, type Department } from '../api/client'
 import { useSession } from '../stores/session'
-import { adminLinks } from '../router'
+import { useFeedback } from '../composables/useFeedback'
+import { adminLinks } from '../app/navigation'
+import { translatedCode, formatDate, formatNumber } from '../i18n'
 import BrandMark from '../components/BrandMark.vue'
+import LanguageSwitcher from '../components/LanguageSwitcher.vue'
+import UserMenu from '../components/UserMenu.vue'
+import SidebarNavigation from '../components/SidebarNavigation.vue'
+import PageHeader from '../components/PageHeader.vue'
+import AppCard from '../components/AppCard.vue'
+import AppBadge from '../components/AppBadge.vue'
+import AppIcon from '../components/AppIcon.vue'
+import AppModal from '../components/AppModal.vue'
+import AppSkeleton from '../components/AppSkeleton.vue'
+import AppEmptyState from '../components/AppEmptyState.vue'
 import FeedbackBox from '../components/FeedbackBox.vue'
+import ShipIllustration from '../components/ShipIllustration.vue'
 import StaffManager from '../features/administration/StaffManager.vue'
 import RoleMatrix from '../features/administration/RoleMatrix.vue'
 import AuditTable from '../features/administration/AuditTable.vue'
 import SupportLookup from '../features/administration/SupportLookup.vue'
 const session = useSession(),
   route = useRoute(),
-  router = useRouter(),
-  open = ref(false)
-const active = computed(() => adminLinks.find((link) => link.path === route.path))
-const links = computed(() => adminLinks.filter((link) => session.can(link.permission)))
-const overview = ref<Dashboard | null>(null),
-  department = ref<Department | null>(null),
-  error = ref(''),
-  loading = ref(false)
+  { t } = useI18n(),
+  open = ref(false),
+  loading = ref(false),
+  { failure, errorText, clear } = useFeedback()
+const active = computed(() => adminLinks.find((link) => link.path === route.path)),
+  overview = ref<Dashboard | null>(null),
+  department = ref<Department | null>(null)
 const areas: Record<string, string[]> = {
-  finance: ['Revenue & payments', 'Expenses & carrier costs', 'Refunds & invoices'],
-  marketing: ['Campaigns', 'Conversion insights'],
-  operations: ['Shipment operations', 'Fulfillment monitoring'],
-  support: ['Support cases'],
-  carriers: ['Provider integrations', 'Carrier configuration'],
-  qa: ['Test execution', 'Issue management'],
+  finance: ['revenue', 'expenses', 'refunds'],
+  marketing: ['campaigns', 'conversion'],
+  operations: ['shipments', 'fulfillment'],
+  support: ['cases'],
+  carriers: ['providers', 'configuration'],
+  qa: ['tests', 'issues'],
 }
+const accountTotal = computed(
+  () => overview.value?.accountStatuses.reduce((sum, row) => sum + Number(row.count), 0) || 0,
+)
+const pending = computed(() =>
+  Number(
+    overview.value?.accountStatuses.find((row) => row.status === 'pending_verification')?.count ||
+      0,
+  ),
+)
+const chartStyle = computed(() => {
+  if (!accountTotal.value || !overview.value) return { background: '#eef2f6' }
+  const colors: Record<string, string> = {
+    active: '#159573',
+    pending_verification: '#f2c45c',
+    suspended: '#eb7c82',
+    invited: '#96acc4',
+  }
+  let start = 0
+  return {
+    background:
+      'conic-gradient(' +
+      overview.value.accountStatuses
+        .map((row) => {
+          const end = start + (Number(row.count) / accountTotal.value) * 100
+          const part = `${colors[row.status] || '#96acc4'} ${start}% ${end}%`
+          start = end
+          return part
+        })
+        .join(',') +
+      ')',
+  }
+})
 let generation = 0
 watch(
   () => route.path,
   async (path) => {
     const current = ++generation
-    error.value = ''
+    clear()
     overview.value = null
     department.value = null
     open.value = false
@@ -41,203 +86,246 @@ watch(
     try {
       if (path === '/admin') {
         const data = await api<Dashboard>('/admin/dashboard')
-        if (generation === current) overview.value = data
+        if (current === generation) overview.value = data
       } else if (areas[path.split('/')[2]]) {
         const data = await api<Department>('/admin/departments/' + path.split('/')[2])
-        if (generation === current) department.value = data
+        if (current === generation) department.value = data
       }
     } catch (e) {
-      if (generation === current) error.value = String(e)
+      if (current === generation) failure.value = e
     } finally {
-      if (generation === current) loading.value = false
+      if (current === generation) loading.value = false
     }
   },
   { immediate: true },
 )
-async function logout() {
-  try {
-    await session.logout()
-    await router.push('/login')
-  } catch (e) {
-    error.value = String(e)
-  }
-}
 </script>
 <template>
   <div class="admin-shell">
-    <aside class="sidebar" :class="{ open }">
+    <a href="#main-content" class="skip-link">{{ t('common.skip') }}</a>
+    <aside class="sidebar">
       <BrandMark />
-      <div class="workspace-label">
-        <span class="workspace-avatar">S</span>
-        <div><strong>ShipWise workspace</strong><small>Administration · Phase 1</small></div>
-      </div>
-      <span class="nav-label">WORKSPACE</span>
-      <nav aria-label="Administration">
-        <RouterLink
-          v-for="link in links"
-          :key="link.path"
-          :to="link.path"
-          :class="{ active: route.path === link.path }"
-          ><span aria-hidden="true">{{ link.symbol }}</span
-          >{{ link.label }}</RouterLink
-        >
-      </nav>
-      <div class="sidebar-foot">
-        <span class="status-dot"></span> Foundation release <small>v0.1.0 · Development</small>
+      <SidebarNavigation />
+      <div class="sidebar-brand-card">
+        <strong>
+          ShipWise
+          <span>AI</span>
+        </strong>
+        <p>{{ t('brand.tagline') }}</p>
+        <ShipIllustration />
       </div>
     </aside>
+    <AppModal v-model:open="open" :title="t('common.workspace')" drawer side="left">
+      <SidebarNavigation @navigate="open = false" />
+    </AppModal>
     <div class="admin-body">
       <header class="admin-topbar">
         <button
-          class="mobile-menu secondary"
+          class="icon-button mobile-nav-toggle"
+          type="button"
+          :aria-label="t('common.openNavigation')"
           :aria-expanded="open"
-          aria-label="Toggle navigation"
-          @click="open = !open"
+          @click="open = true"
         >
-          ☰</button
-        ><span
-          >Workspace <span class="crumb-divider">/</span> <strong>{{ active?.label }}</strong></span
-        >
-        <div class="user-menu">
-          <span class="user-avatar">{{ session.user?.name.slice(0, 1) }}</span>
-          <div>
-            <strong>{{ session.user?.name }}</strong
-            ><small>{{ session.user?.roles.join(', ').replaceAll('_', ' ') }}</small>
-          </div>
-          <button class="text-button" @click="logout">Sign out ↗</button>
+          <AppIcon name="menu" />
+        </button>
+        <nav class="breadcrumbs" :aria-label="t('common.workspace')">
+          <span>{{ t('common.workspace') }}</span>
+          <AppIcon name="right" :size="14" />
+          <strong>{{ t('navigation.' + active?.key) }}</strong>
+        </nav>
+        <div class="header-actions">
+          <LanguageSwitcher />
+          <UserMenu />
         </div>
       </header>
-      <main class="admin-main">
-        <div class="page-heading">
-          <div>
-            <span class="eyebrow">YOUR SHIPWISE WORKSPACE</span>
-            <h1>{{ active?.label }}<span class="heading-dot">.</span></h1>
-          </div>
-          <span class="release-tag">PHASE 01 <span>Foundation</span></span>
-        </div>
-        <FeedbackBox :error="error" :loading="loading" /><template v-if="overview"
-          ><p class="lead">A clear picture of your platform, built on real account activity.</p>
+      <main id="main-content" class="admin-main">
+        <PageHeader
+          :title="t('navigation.' + active?.key)"
+          :description="
+            t(
+              route.path === '/admin'
+                ? 'admin.description'
+                : route.path === '/admin/audit'
+                  ? 'audit.description'
+                  : route.path === '/admin/staff'
+                    ? 'staff.description'
+                    : route.path === '/admin/access-control'
+                      ? 'access.description'
+                      : 'departments.description',
+            )
+          "
+          :icon="active?.icon"
+        />
+        <FeedbackBox :error="errorText" />
+        <AppSkeleton v-if="loading" />
+        <template v-if="overview">
           <div class="metric-grid">
-            <article class="metric">
-              <span>Registered customers <span>↗</span></span
-              ><strong>{{ overview.customerCount }}</strong
-              ><small>All registered customer accounts</small>
-            </article>
-            <article class="metric">
-              <span>Active team members <span>♧</span></span
-              ><strong>{{ overview.activeStaffCount }}</strong
-              ><small>Staff accounts with active access</small>
-            </article>
-            <article class="metric health-metric">
-              <span>Platform status <span>◉</span></span
-              ><strong>Available</strong
-              ><small>API responding · {{ overview.health.version }}</small>
-            </article>
+            <AppCard class="metric-card">
+              <span class="feature-icon"><AppIcon name="staff" :size="25" /></span>
+              <div>
+                <p>{{ t('admin.customers') }}</p>
+                <strong>{{ formatNumber(overview.customerCount) }}</strong>
+                <small>{{ t('admin.allCustomers') }}</small>
+              </div>
+            </AppCard>
+            <AppCard class="metric-card">
+              <span class="feature-icon"><AppIcon name="user" :size="25" /></span>
+              <div>
+                <p>{{ t('admin.staff') }}</p>
+                <strong>{{ formatNumber(overview.activeStaffCount) }}</strong>
+                <small>{{ t('admin.activeStaff') }}</small>
+              </div>
+            </AppCard>
+            <AppCard class="metric-card">
+              <span class="feature-icon icon-warning"><AppIcon name="audit" :size="25" /></span>
+              <div>
+                <p>{{ t('admin.pending') }}</p>
+                <strong>{{ formatNumber(pending) }}</strong>
+                <small>{{ t('statuses.pending_verification') }}</small>
+              </div>
+            </AppCard>
+            <AppCard class="metric-card">
+              <span class="feature-icon icon-blue"><AppIcon name="file" :size="25" /></span>
+              <div>
+                <p>{{ t('admin.auditCount') }}</p>
+                <strong>
+                  {{ overview.recentAudit ? formatNumber(overview.recentAudit.length) : '—' }}
+                </strong>
+                <small>{{ t('admin.recentActivity') }}</small>
+              </div>
+            </AppCard>
           </div>
           <div class="overview-grid">
-            <section class="panel">
-              <div class="section-toolbar">
-                <h2>Recent security activity</h2>
-                <RouterLink v-if="session.can('audit.read')" class="text-link" to="/admin/audit"
-                  >View audit trail ↗</RouterLink
-                >
-              </div>
+            <AppCard :title="t('admin.recentActivity')">
+              <template #header>
+                <RouterLink v-if="session.can('audit.read')" class="text-link" to="/admin/audit">
+                  {{ t('admin.viewAudit') }}
+                  <AppIcon name="arrow" :size="16" />
+                </RouterLink>
+              </template>
               <ul v-if="overview.recentAudit?.length" class="activity-list">
-                <li v-for="event in overview.recentAudit.slice(0, 6)" :key="event.id">
-                  <span class="activity-symbol">↗</span>
+                <li v-for="event in overview.recentAudit.slice(0, 5)" :key="event.id">
+                  <span
+                    class="event-icon"
+                    :class="{ 'event-warning': event.action.includes('failed') }"
+                  >
+                    <AppIcon
+                      :name="event.action.includes('failed') ? 'warning' : 'audit'"
+                      :size="19"
+                    />
+                  </span>
                   <div>
-                    <strong>{{ event.action.replaceAll('.', ' · ').replaceAll('_', ' ') }}</strong
-                    ><small>{{ new Date(event.created_at).toLocaleString() }}</small>
+                    <strong>{{ translatedCode('events', event.action) }}</strong>
+                    <small>{{ formatDate(event.created_at) }} · {{ t('common.timezone') }}</small>
                   </div>
-                  <span class="badge">Recorded</span>
+                  <AppBadge :tone="event.action.includes('failed') ? 'warning' : 'success'">
+                    {{
+                      t(event.action.includes('failed') ? 'common.attention' : 'common.recorded')
+                    }}
+                  </AppBadge>
                 </li>
               </ul>
-              <div v-else class="empty">
-                <h3>A fresh start.</h3>
-                <p>Security events will appear here as your team uses ShipWise.</p>
+              <AppEmptyState
+                v-else
+                :title="t('admin.noActivity')"
+                :description="t('admin.noActivityBody')"
+                icon="audit"
+              />
+            </AppCard>
+            <AppCard :title="t('admin.accountStatuses')">
+              <div class="status-chart">
+                <div class="donut" :style="chartStyle" aria-hidden="true">
+                  <span>
+                    <strong>{{ formatNumber(accountTotal) }}</strong>
+                    <small>{{ t('common.account') }}</small>
+                  </span>
+                </div>
+                <dl>
+                  <div v-for="row in overview.accountStatuses" :key="row.status">
+                    <dt>
+                      <span :class="['status-dot', 'status-' + row.status]"></span>
+                      {{ translatedCode('statuses', row.status) }}
+                    </dt>
+                    <dd>{{ formatNumber(row.count) }}</dd>
+                  </div>
+                </dl>
               </div>
-            </section>
-            <section class="panel">
-              <span class="eyebrow">ACCOUNT OVERVIEW</span>
-              <h2>Access at a glance</h2>
-              <div
-                v-for="status in overview.accountStatuses"
-                :key="status.status"
-                class="status-row"
-              >
-                <span class="badge" :class="status.status">{{
-                  status.status.replaceAll('_', ' ')
-                }}</span
-                ><strong>{{ status.count }}</strong>
-              </div>
-              <RouterLink v-if="session.can('staff.read')" class="button wide" to="/admin/staff"
-                >Manage your team ↗</RouterLink
-              >
-            </section>
+              <RouterLink v-if="session.can('staff.read')" class="text-link" to="/admin/staff">
+                {{ t('admin.manageTeam') }}
+                <AppIcon name="right" :size="17" />
+              </RouterLink>
+            </AppCard>
           </div>
-          <section class="roadmap-card">
-            <span class="roadmap-icon">↗</span>
+          <AppCard class="roadmap-card">
+            <span class="feature-icon"><AppIcon name="carriers" :size="30" /></span>
             <div>
-              <span class="eyebrow">THE FOUNDATION IS JUST THE BEGINNING</span>
-              <h2>Ready for the next chapter.</h2>
-              <p>
-                Carrier comparison, shipment booking and payments will arrive in future phases. No
-                shipping or financial activity is available yet.
-              </p>
+              <h2>{{ t('admin.roadmapTitle') }}</h2>
+              <p>{{ t('admin.roadmapBody') }}</p>
             </div>
-            <span class="badge">Looking ahead</span>
-          </section></template
-        ><StaffManager v-if="route.path === '/admin/staff'" /><RoleMatrix
-          v-if="route.path === '/admin/access-control'"
-        /><AuditTable v-if="route.path === '/admin/audit'" /><template v-if="department"
-          ><p class="lead">
-            Your {{ department.department }} workspace, ready for what comes next.
+            <AppBadge>{{ t('common.future') }}</AppBadge>
+          </AppCard>
+          <p class="system-status">
+            <span class="status-dot status-active"></span>
+            {{ t('admin.available') }} ·
+            {{ overview.health.version }}
           </p>
-          <section v-if="department.department === 'qa'" class="panel">
-            <h2>Release information</h2>
-            <div class="feature-grid">
+        </template>
+        <StaffManager v-if="route.path === '/admin/staff'" />
+        <RoleMatrix v-if="route.path === '/admin/access-control'" />
+        <AuditTable v-if="route.path === '/admin/audit'" />
+        <template v-if="department">
+          <AppCard v-if="department.department === 'qa'" :title="t('departments.release')">
+            <dl class="release-grid">
               <div>
-                <span class="eyebrow">VERSION</span>
-                <h3>{{ department.version }}</h3>
+                <dt>{{ t('departments.version') }}</dt>
+                <dd>{{ department.version }}</dd>
               </div>
               <div>
-                <span class="eyebrow">ENVIRONMENT</span>
-                <h3>{{ department.environment }}</h3>
+                <dt>{{ t('departments.environment') }}</dt>
+                <dd>{{ department.environment }}</dd>
               </div>
               <div>
-                <span class="eyebrow">API</span>
-                <h3>{{ department.health }}</h3>
+                <dt>{{ t('departments.health') }}</dt>
+                <dd>
+                  <AppBadge tone="success">{{ t('admin.available') }}</AppBadge>
+                </dd>
               </div>
-            </div>
-            <p class="fine">
-              Deployment details are limited to safe build metadata. Test execution integrations are
-              not connected.
-            </p>
-          </section>
-          <section v-if="department.department === 'marketing'" class="panel">
-            <span class="eyebrow">ACCOUNT GROWTH</span>
-            <h2>{{ department.customerCount }} registered customers</h2>
-            <p class="muted">Aggregate count only. Personal customer data is restricted.</p>
-          </section>
+            </dl>
+            <p class="muted">{{ t('departments.qaNotice') }}</p>
+          </AppCard>
+          <AppCard v-if="department.department === 'marketing'" :title="t('departments.growth')">
+            <h3>
+              {{
+                t(
+                  'departments.customerCount',
+                  {
+                    count: formatNumber(department.customerCount || 0),
+                  },
+                  department.customerCount || 0,
+                )
+              }}
+            </h3>
+            <p class="muted">{{ t('departments.aggregate') }}</p>
+          </AppCard>
           <SupportLookup
             v-if="department.department === 'support' && session.can('customers.read_limited')"
           />
           <div class="feature-grid department-grid">
-            <article
-              v-for="area in areas[department.department]"
-              :key="area"
-              class="panel empty-area"
-            >
-              <span class="empty-icon">↗</span><span class="eyebrow">FUTURE PHASE</span>
-              <h2>{{ area }}</h2>
-              <p>Not available in Phase 1. {{ department.message }}</p>
-              <span class="badge neutral">No activity yet</span>
-            </article>
-          </div></template
-        >
+            <AppCard v-for="area in areas[department.department]" :key="area">
+              <AppEmptyState
+                :title="t('departments.' + area)"
+                :description="t('departments.futureBody')"
+                :icon="active?.icon"
+              >
+                <AppBadge>{{ t('common.notAvailable') }}</AppBadge>
+              </AppEmptyState>
+            </AppCard>
+          </div>
+        </template>
         <footer class="workspace-footer">
-          <span>ShipWise AI · A foundation for better shipping.</span
-          ><span>Secure access. Clear responsibilities.</span>
+          <span>{{ t('brand.foundation') }}</span>
+          <span>ShipWise AI · {{ t('common.foundation') }}</span>
         </footer>
       </main>
     </div>
