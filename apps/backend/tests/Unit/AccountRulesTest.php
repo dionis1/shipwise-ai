@@ -56,6 +56,6 @@ final class AccountRulesTest extends TestCase
     public function testInvalidEmailIsRejected(): void
     {
         $this->expectException(RuleViolation::class);
-        new User('invalid','Person','hash');
+        new User('invalid', 'Person', 'hash');
     }
 }

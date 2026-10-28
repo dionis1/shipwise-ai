@@ -90,7 +90,7 @@ final class Accounts
         $this->transactions->run(function () use ($user, $password) {
             $user->changePassword($this->hasher->hash($user, $password));
             $this->users->save($user);
-            $this->audit->record($user->id(),'account.password_changed',$user->id());
+            $this->audit->record($user->id(), 'account.password_changed', $user->id());
         });
     }
 }

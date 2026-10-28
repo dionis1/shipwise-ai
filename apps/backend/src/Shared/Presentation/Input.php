@@ -53,7 +53,7 @@ final class Input
             throw new BadRequestHttpException('Invalid email address.');
         }
 
-return strtolower(trim($email));
+        return strtolower(trim($email));
     }
 
     /**
@@ -69,6 +69,6 @@ return strtolower(trim($email));
             }
         }
 
-return $value;
+        return $value;
     }
 }
