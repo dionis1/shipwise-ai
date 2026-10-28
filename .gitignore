@@ -12,3 +12,6 @@
 **/playwright-report/
 .phpunit.cache/
 
+
+**/.php-cs-fixer.cache
+/apps/backend/config/reference.php

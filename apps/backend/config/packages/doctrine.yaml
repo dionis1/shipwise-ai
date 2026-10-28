@@ -1,0 +1,18 @@
+doctrine:
+  dbal:
+    url: '%env(resolve:DATABASE_URL)%'
+    use_savepoints: true
+  orm:
+    auto_generate_proxy_classes: true
+    enable_native_lazy_objects: true
+    mappings:
+      Identity:
+        type: xml
+        dir: '%kernel.project_dir%/config/doctrine'
+        prefix: App\Identity\Domain
+        is_bundle: false
+
+when@test:
+  doctrine:
+    dbal:
+      dbname_suffix: '_test'

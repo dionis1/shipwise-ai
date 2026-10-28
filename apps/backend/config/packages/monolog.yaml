@@ -1,0 +1,14 @@
+monolog:
+  handlers:
+    main:
+      type: stream
+      path: php://stderr
+      level: warning
+      formatter: monolog.formatter.json
+
+when@test:
+  monolog:
+    handlers:
+      main:
+        level: critical
+        channels: ['!doctrine', '!request', '!security']

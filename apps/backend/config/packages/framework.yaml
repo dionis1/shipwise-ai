@@ -1,0 +1,46 @@
+framework:
+  secret: '%env(APP_SECRET)%'
+  router: { utf8: true }
+  http_method_override: false
+  handle_all_throwables: true
+  session:
+    handler_id: null
+    cookie_httponly: true
+    cookie_secure: auto
+    cookie_samesite: lax
+    name: SHIPWISE_SESSION
+  csrf_protection: true
+  validation: { email_validation_mode: html5 }
+  mailer: { dsn: '%env(MAILER_DSN)%' }
+  cache:
+    default_redis_provider: '%env(REDIS_URL)%'
+    pools:
+      cache.rate_limiter: { adapter: cache.adapter.redis }
+  lock: '%env(REDIS_URL)%'
+  rate_limiter:
+    account_requests:
+      policy: sliding_window
+      limit: 10
+      interval: '15 minutes'
+  messenger:
+    failure_transport: failed
+    transports:
+      async: '%env(MESSENGER_TRANSPORT_DSN)%'
+      failed: '%env(REDIS_URL)%/failed'
+    routing: {}
+when@test:
+  framework:
+    test: true
+    session: { storage_factory_id: session.storage.factory.mock_file }
+    cache:
+      pools:
+        cache.rate_limiter: { adapter: cache.adapter.array }
+    lock: flock
+
+when@e2e:
+  framework:
+    rate_limiter:
+      account_requests:
+        policy: sliding_window
+        limit: 1000
+        interval: '1 minute'

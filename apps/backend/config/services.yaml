@@ -1,0 +1,22 @@
+parameters:
+  app.url: '%env(APP_URL)%'
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    bind:
+      $appUrl: '%app.url%'
+      $mailFrom: '%env(MAIL_FROM)%'
+      $version: '%env(APP_VERSION)%'
+      $environment: '%kernel.environment%'
+  App\:
+    resource: '../src/'
+    exclude: '../src/{Kernel.php,Identity/Domain/,Shared/Domain/,AccessControl/Domain/}'
+  App\Identity\Application\Accounts: ~
+  App\Identity\Domain\UserRepository: '@App\Identity\Infrastructure\DoctrineUserRepository'
+  App\Identity\Application\TokenRepository: '@App\Identity\Infrastructure\SqlTokenRepository'
+  App\Identity\Application\AccountMailer: '@App\Identity\Infrastructure\SymfonyAccountMailer'
+  App\AccessControl\Application\AccessRepository: '@App\AccessControl\Infrastructure\SqlAccessRepository'
+  App\Audit\Application\AuditRepository: '@App\Audit\Infrastructure\SqlAuditRepository'
+  App\Shared\Application\Transactions: '@App\Shared\Infrastructure\DoctrineTransactions'
+  App\Identity\Application\Passwords: '@App\Identity\Infrastructure\SymfonyPasswords'
