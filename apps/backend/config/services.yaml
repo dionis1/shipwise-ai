@@ -1,4 +1,14 @@
 parameters:
+  env(DHL_SANDBOX_ENABLED): '0'
+  env(DPD_SANDBOX_ENABLED): '0'
+  env(DHL_CLIENT_ID): ''
+  env(DHL_CLIENT_SECRET): ''
+  env(DHL_USERNAME): ''
+  env(DHL_PASSWORD): ''
+  env(DHL_BILLING_NUMBER): ''
+  env(DHL_PROFILE): ''
+  env(DPD_DELIS_ID): ''
+  env(DPD_PASSWORD): ''
   app.url: '%env(APP_URL)%'
 services:
   _defaults:
@@ -31,3 +41,23 @@ services:
       $providers: ['@App\CarrierIntegration\Infrastructure\DevelopmentTariffProvider']
 
   App\Pricing\Application\PricingRules: '@App\Pricing\Infrastructure\SqlPricingRules'
+
+  App\CarrierIntegration\Infrastructure\SandboxTransport:
+    arguments:
+      $client: null
+  App\CarrierIntegration\Infrastructure\SandboxTokens:
+    arguments:
+      $carrierTokens: '@cache.carrier_tokens'
+  App\CarrierIntegration\Infrastructure\SandboxConfiguration:
+    arguments:
+      $values:
+        DHL_SANDBOX_ENABLED: '%env(DHL_SANDBOX_ENABLED)%'
+        DPD_SANDBOX_ENABLED: '%env(DPD_SANDBOX_ENABLED)%'
+        DHL_CLIENT_ID: '%env(DHL_CLIENT_ID)%'
+        DHL_CLIENT_SECRET: '%env(DHL_CLIENT_SECRET)%'
+        DHL_USERNAME: '%env(DHL_USERNAME)%'
+        DHL_PASSWORD: '%env(DHL_PASSWORD)%'
+        DHL_BILLING_NUMBER: '%env(DHL_BILLING_NUMBER)%'
+        DHL_PROFILE: '%env(DHL_PROFILE)%'
+        DPD_DELIS_ID: '%env(DPD_DELIS_ID)%'
+        DPD_PASSWORD: '%env(DPD_PASSWORD)%'
