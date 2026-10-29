@@ -19,6 +19,14 @@ framework:
       cache.carrier_tokens: { adapter: cache.adapter.redis }
   lock: '%env(REDIS_URL)%'
   rate_limiter:
+    parcel_shops:
+      policy: sliding_window
+      limit: 15
+      interval: '15 minutes'
+    carrier_checks:
+      policy: sliding_window
+      limit: 3
+      interval: '1 minute'
     quotes:
       policy: sliding_window
       limit: 20

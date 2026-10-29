@@ -4043,6 +4043,495 @@
           }
         ]
       }
+    },
+    "/parcel-shops": {
+      "get": {
+        "operationId": "findParcelShops",
+        "tags": [
+          "Carrier sandboxes"
+        ],
+        "summary": "Find sandbox parcel shops without retaining searches",
+        "description": "Sandbox capabilities only; never rating or booking. No production approval is implied.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Sanitized result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ParcelShops"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Request rejected or unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Request rejected or unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Request rejected or unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Request rejected or unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Request rejected or unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Request rejected or unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "in": "query",
+            "name": "country",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "DE",
+                "FR"
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "postalCode",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 9,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9 -]{1,8}$"
+            }
+          },
+          {
+            "in": "query",
+            "name": "city",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 50
+            }
+          },
+          {
+            "in": "query",
+            "name": "carrier",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "all",
+                "DPD",
+                "GLS"
+              ],
+              "default": "all"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 20,
+              "default": 10
+            }
+          }
+        ]
+      }
+    },
+    "/admin/carrier-sandboxes": {
+      "get": {
+        "operationId": "listCarrierSandboxes",
+        "tags": [
+          "Carrier sandboxes"
+        ],
+        "summary": "Read actual sandbox configuration and recent check status",
+        "description": "Sandbox capabilities only; never rating or booking. No production approval is implied.",
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sanitized result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SandboxIntegrations"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Request rejected or unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Request rejected or unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Request rejected or unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Request rejected or unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Request rejected or unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Request rejected or unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/carrier-sandboxes/{code}": {
+      "patch": {
+        "operationId": "configureCarrierSandbox",
+        "tags": [
+          "Carrier sandboxes"
+        ],
+        "summary": "Set audited sandbox switch; requires carriers.configure",
+        "description": "Sandbox capabilities only; never rating or booking. No production approval is implied.",
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sanitized result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Updated"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Request rejected or unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Request rejected or unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Request rejected or unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Request rejected or unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Request rejected or unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Request rejected or unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "enabled"
+                ],
+                "properties": {
+                  "enabled": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-CSRF-Token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "code",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "DHL",
+                "DPD"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "/admin/carrier-sandboxes/{code}/check": {
+      "post": {
+        "operationId": "checkCarrierSandbox",
+        "tags": [
+          "Carrier sandboxes"
+        ],
+        "summary": "Explicitly test authentication or fixed DHL dry-run fixture",
+        "description": "Sandbox capabilities only; never rating or booking. No production approval is implied.",
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sanitized result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SandboxCheck"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Request rejected or unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Request rejected or unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Request rejected or unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Request rejected or unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Request rejected or unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Request rejected or unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "operation"
+                ],
+                "properties": {
+                  "operation": {
+                    "type": "string",
+                    "enum": [
+                      "authentication",
+                      "validation"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-CSRF-Token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "code",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "DHL",
+                "DPD"
+              ]
+            }
+          }
+        ]
+      }
     }
   },
   "components": {
@@ -5280,6 +5769,248 @@
             }
           }
         }
+      },
+      "SandboxStatus": {
+        "type": "string",
+        "enum": [
+          "not_configured",
+          "disabled",
+          "credentials_configured",
+          "sandbox_connection_verified",
+          "pending_approval",
+          "temporarily_unavailable",
+          "authentication_failed",
+          "rate_limited",
+          "response_invalid",
+          "validation_passed",
+          "validation_rejected",
+          "specification_unavailable",
+          "available",
+          "search_rejected"
+        ]
+      },
+      "ParcelShop": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "carrier",
+          "id",
+          "name",
+          "address",
+          "postalCode",
+          "city",
+          "country",
+          "latitude",
+          "longitude",
+          "services",
+          "retrievedAt",
+          "source"
+        ],
+        "properties": {
+          "carrier": {
+            "type": "string",
+            "enum": [
+              "DPD",
+              "GLS"
+            ]
+          },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "address": {
+            "type": "string",
+            "nullable": true
+          },
+          "postalCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "country": {
+            "type": "string",
+            "nullable": true
+          },
+          "latitude": {
+            "type": "number",
+            "nullable": true,
+            "minimum": -90,
+            "maximum": 90
+          },
+          "longitude": {
+            "type": "number",
+            "nullable": true,
+            "minimum": -180,
+            "maximum": 180
+          },
+          "services": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "retrievedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "dpd_sandbox"
+            ]
+          }
+        }
+      },
+      "ParcelShops": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "items",
+          "outcomes"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ParcelShop"
+            }
+          },
+          "outcomes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "carrier",
+                "status"
+              ],
+              "properties": {
+                "carrier": {
+                  "type": "string"
+                },
+                "status": {
+                  "$ref": "#/components/schemas/SandboxStatus"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SandboxIntegration": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "carrier",
+          "status",
+          "credentialsConfigured",
+          "environmentEnabled",
+          "enabled",
+          "liveApproved",
+          "capabilities",
+          "checkedAt",
+          "operation"
+        ],
+        "properties": {
+          "carrier": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/SandboxStatus"
+          },
+          "credentialsConfigured": {
+            "type": "boolean"
+          },
+          "environmentEnabled": {
+            "type": "boolean"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "liveApproved": {
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "capabilities": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "authentication",
+                "validation",
+                "locations"
+              ]
+            }
+          },
+          "checkedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "operation": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "SandboxIntegrations": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "items"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SandboxIntegration"
+            }
+          }
+        }
+      },
+      "SandboxCheck": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "carrier",
+          "operation",
+          "status",
+          "checkedAt"
+        ],
+        "properties": {
+          "carrier": {
+            "type": "string"
+          },
+          "operation": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/SandboxStatus"
+          },
+          "checkedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Updated": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "updated"
+        ],
+        "properties": {
+          "updated": {
+            "type": "boolean"
+          }
+        }
       }
     }
   },
@@ -5287,6 +6018,10 @@
     {
       "name": "Quoting",
       "description": "Preliminary development quotations; no bookable commitments."
+    },
+    {
+      "name": "Carrier sandboxes",
+      "description": "Separated location and non-purchasing validation capabilities."
     }
   ]
 }
