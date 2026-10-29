@@ -71,7 +71,7 @@ The domain has no Symfony or Doctrine dependencies. ORM XML mapping lives in inf
 
 ## Routes and API
 
-Public: `/`, `/login`, `/register`, `/verify-email`, `/forgot-password`, `/reset-password`, `/accept-invitation`.
+Public: `/`, `/compare`, `/parcel-shops`, `/login`, `/register`, `/verify-email`, `/forgot-password`, `/reset-password`, `/accept-invitation`.
 Customer: `/app`, `/app/profile`, `/app/settings`.
 Staff: `/admin`, `/admin/staff`, `/admin/access-control`, `/admin/audit`, `/admin/qa`, `/admin/finance`, `/admin/marketing`, `/admin/operations`, `/admin/support`, `/admin/carriers`.
 
@@ -96,3 +96,9 @@ Offers expire after 15 minutes and preliminary records are retained for at most 
 Authorized staff manage availability and append tariff versions at `/admin/carriers`; only Super Administrators manage pricing rules. See the [Phase 2 implementation guide](docs/phases/PHASE_2_CARRIER_COMPARISON_QUOTING.md) for architecture, exact pricing/rounding, source limitations, administration, provider extension and tests. [Example quotation](docs/api/phase-2-example.json) contains synthetic test data only.
 
 The next phase requires approved carrier contracts and legally verified commercial tax scenarios before any live offers. Purchase work must add verified PSP events, transactional outbox/inbox, idempotent order purchase processing, private labels and reconciliation for unknown provider outcomes. Preserve the [future purchase safety design](docs/ARCHITECTURE.md); do not connect an AI model directly to financial or carrier purchase actions.
+
+## Guarded carrier sandboxes
+
+The disabled-by-default DHL and DPD adapters add sandbox authentication, DHL validation-only synthetic fixtures and DPD parcel-shop discovery. Open `/parcel-shops` for EN/DE/FR lookup and `/admin/carriers` for permission-protected switches and explicit checks. Run `make migrate` after pulling. Sandbox access requires dedicated runtime credentials, a development environment flag and a separate audited administrative switch. Shipping catalog records stay unconfigured; these capabilities never generate carrier rates or establish booking/sales approval.
+
+GLS is blocked on access to its official Authentication API v2 / OOH Location Finder specification and reports that limitation explicitly. No GLS endpoints are guessed. No authenticated carrier smoke tests or production approvals are claimed. Read the [verification record](docs/integrations/verification.md), [security/configuration boundary](docs/integrations/security.md) and individual [DHL](docs/integrations/dhl.md), [DPD](docs/integrations/dpd.md), [GLS](docs/integrations/gls.md) notes before enabling anything.
