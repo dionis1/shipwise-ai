@@ -14,6 +14,7 @@ defineProps<{ customer?: boolean }>()
   <header class="site-header">
     <BrandMark />
     <nav :aria-label="t('common.navigation')" class="site-nav">
+      <RouterLink to="/parcel-shops">{{ t('shops.title') }}</RouterLink>
       <RouterLink to="/compare">{{ t('quote.title') }}</RouterLink>
       <template v-if="customer">
         <RouterLink to="/app" :class="{ current: $route.path === '/app' }">

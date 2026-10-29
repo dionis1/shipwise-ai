@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useSession } from '../stores/session'
 import AuthView from '../views/AuthView.vue'
+import ParcelShopsView from '../views/ParcelShopsView.vue'
 import CompareView from '../views/CompareView.vue'
 import HomeView from '../views/HomeView.vue'
 import CustomerView from '../views/CustomerView.vue'
@@ -13,6 +14,7 @@ export const router = createRouter({
   routes: [
     { path: '/', component: HomeView },
     { path: '/compare', component: CompareView },
+    { path: '/parcel-shops', component: ParcelShopsView },
     ...[
       'login',
       'register',

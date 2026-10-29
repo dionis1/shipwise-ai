@@ -81,6 +81,10 @@ final class ApiSubscriber implements EventSubscriberInterface
                 'quote_not_found' => 404, 'quote_expired' => 410, 'idempotency_conflict' => 409, default => 422,
             };
         }
+        if ($error instanceof \App\CarrierIntegration\Domain\IntegrationFailure) {
+            $code = $error->reason;
+            $status = 'search_invalid' === $code ? 422 : 409;
+        }
         $titles = [400 => 'Bad Request', 401 => 'Unauthorized', 403 => 'Forbidden', 404 => 'Not Found', 405 => 'Method Not Allowed', 409 => 'Conflict', 422 => 'Unprocessable Content', 429 => 'Too Many Requests', 500 => 'Internal Server Error'];
         $event->setResponse(new JsonResponse(['code' => $code ?? \App\Shared\Presentation\ProblemCode::of($error->getMessage(), $status), 'type' => 'about:blank', 'title' => $titles[$status] ?? 'Request Failed', 'status' => $status, 'detail' => $status >= 500 ? 'The request could not be completed.' : $error->getMessage(), 'correlationId' => $event->getRequest()->attributes->get('correlationId')], $status, array_merge($error instanceof HttpExceptionInterface ? $error->getHeaders() : [], ['Content-Type' => 'application/problem+json'])));
     }

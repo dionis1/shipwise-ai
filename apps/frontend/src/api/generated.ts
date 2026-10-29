@@ -641,6 +641,86 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/parcel-shops": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Find sandbox parcel shops without retaining searches
+         * @description Sandbox capabilities only; never rating or booking. No production approval is implied.
+         */
+        get: operations["findParcelShops"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/carrier-sandboxes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Read actual sandbox configuration and recent check status
+         * @description Sandbox capabilities only; never rating or booking. No production approval is implied.
+         */
+        get: operations["listCarrierSandboxes"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/carrier-sandboxes/{code}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Set audited sandbox switch; requires carriers.configure
+         * @description Sandbox capabilities only; never rating or booking. No production approval is implied.
+         */
+        patch: operations["configureCarrierSandbox"];
+        trace?: never;
+    };
+    "/admin/carrier-sandboxes/{code}/check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Explicitly test authentication or fixed DHL dry-run fixture
+         * @description Sandbox capabilities only; never rating or booking. No production approval is implied.
+         */
+        post: operations["checkCarrierSandbox"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -939,6 +1019,58 @@ export interface components {
                 status: string;
                 count: number;
             }[];
+        };
+        /** @enum {string} */
+        SandboxStatus: "not_configured" | "disabled" | "credentials_configured" | "sandbox_connection_verified" | "pending_approval" | "temporarily_unavailable" | "authentication_failed" | "rate_limited" | "response_invalid" | "validation_passed" | "validation_rejected" | "specification_unavailable" | "available" | "search_rejected";
+        ParcelShop: {
+            /** @enum {string} */
+            carrier: "DPD" | "GLS";
+            id: string;
+            name: string | null;
+            address: string | null;
+            postalCode: string | null;
+            city: string | null;
+            country: string | null;
+            latitude: number | null;
+            longitude: number | null;
+            services: string[];
+            /** Format: date-time */
+            retrievedAt: string;
+            /** @enum {string} */
+            source: "dpd_sandbox";
+        };
+        ParcelShops: {
+            items: components["schemas"]["ParcelShop"][];
+            outcomes: {
+                carrier: string;
+                status: components["schemas"]["SandboxStatus"];
+            }[];
+        };
+        SandboxIntegration: {
+            carrier: string;
+            status: components["schemas"]["SandboxStatus"];
+            credentialsConfigured: boolean;
+            environmentEnabled: boolean;
+            enabled: boolean;
+            /** @enum {boolean} */
+            liveApproved: false;
+            capabilities: ("authentication" | "validation" | "locations")[];
+            /** Format: date-time */
+            checkedAt: string | null;
+            operation: string | null;
+        };
+        SandboxIntegrations: {
+            items: components["schemas"]["SandboxIntegration"][];
+        };
+        SandboxCheck: {
+            carrier: string;
+            operation: string;
+            status: components["schemas"]["SandboxStatus"];
+            /** Format: date-time */
+            checkedAt: string;
+        };
+        Updated: {
+            updated: boolean;
         };
     };
     responses: never;
@@ -3988,6 +4120,329 @@ export interface operations {
             };
             /** @description Rate limited */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    findParcelShops: {
+        parameters: {
+            query: {
+                country: "DE" | "FR";
+                postalCode: string;
+                city?: string;
+                carrier?: "all" | "DPD" | "GLS";
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Sanitized result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ParcelShops"];
+                };
+            };
+            /** @description Request rejected or unavailable */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description Request rejected or unavailable */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description Request rejected or unavailable */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description Request rejected or unavailable */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description Request rejected or unavailable */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description Request rejected or unavailable */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    listCarrierSandboxes: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Sanitized result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SandboxIntegrations"];
+                };
+            };
+            /** @description Request rejected or unavailable */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description Request rejected or unavailable */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description Request rejected or unavailable */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description Request rejected or unavailable */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description Request rejected or unavailable */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description Request rejected or unavailable */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    configureCarrierSandbox: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-CSRF-Token": string;
+            };
+            path: {
+                code: "DHL" | "DPD";
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    enabled: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description Sanitized result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Updated"];
+                };
+            };
+            /** @description Request rejected or unavailable */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description Request rejected or unavailable */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description Request rejected or unavailable */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description Request rejected or unavailable */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description Request rejected or unavailable */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description Request rejected or unavailable */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    checkCarrierSandbox: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-CSRF-Token": string;
+            };
+            path: {
+                code: "DHL" | "DPD";
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    operation: "authentication" | "validation";
+                };
+            };
+        };
+        responses: {
+            /** @description Sanitized result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SandboxCheck"];
+                };
+            };
+            /** @description Request rejected or unavailable */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description Request rejected or unavailable */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description Request rejected or unavailable */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description Request rejected or unavailable */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description Request rejected or unavailable */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description Request rejected or unavailable */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };

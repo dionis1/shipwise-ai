@@ -1,0 +1,15 @@
+# Sandbox capability boundary
+
+Location discovery and fixed-fixture shipment validation use separate ports from rate calculation. No sandbox adapter is registered as a rate provider. Existing development tariffs remain explicitly synthetic.
+
+All operations use exact compiled HTTPS sandbox URLs, verified TLS, no redirects, an eight-second total deadline, four-second inactivity timeout and 256 KiB response limit. There are no automatic transport retries. Authentication rejection may trigger one token reacquisition for a safe lookup/check only. Validation is never retried. Exceptions expose stable reason codes without upstream messages, payloads or nested transport exceptions. The dedicated client is outside the Symfony HTTP profiler.
+
+Tokens use a dedicated Redis cache pool and locked refresh. Redis must remain private to the backend network; do not expose it or include cache contents in artifacts. Production, test and E2E environments cannot enable provider networking through environment flags. Unit tests inject mock HTTP clients. Both an explicit development enable flag and complete credentials are required. Configuration examples contain empty placeholders only. Use ignored `.env.local` or managed runtime secrets; never put credentials in chat.
+
+No public URL, operation, shipment body, billing identity or secret is accepted from customers. No shipment creation, booking, label storage, payments, protected GLS drop-off/pick-up operations or UPS integration is implemented.
+
+The public `GET /api/v1/parcel-shops` accepts country DE/FR, postal code (2–9 characters), optional city (50 characters), carrier `all`/`DPD`/`GLS` and limit 1–20. It sends no street or identity. A 15-request/15-minute IP limiter bounds provider use; searches/results are not saved. Nginx omits this path from access logs; API responses are `no-store` and include the existing request correlation ID.
+
+Administration uses `GET /api/v1/admin/carrier-sandboxes` (`carriers.catalog.read`), `PATCH /{code}` and `POST /{code}/check` (`carriers.configure`, session and CSRF required). A separate disabled database switch must also be enabled, in addition to the development environment flag and credentials. Changes and explicit checks are transactionally audited with carrier, operation and stable result only. No credentials can be written through these APIs. Checks are limited to three per minute per actor. Check bodies accept exactly `authentication` or DHL-only `validation`; enabling never performs a network call. Health evidence expires after ten minutes and is invalidated by configuration changes. An authentication check establishes only that operation, never location entitlement, rate capability or production approval. Regular customer searches never mutate stored diagnostic evidence.
+
+Token refresh uses a nonblocking lock: concurrent refresh attempts fail temporarily instead of waiting without a deadline. Outbound requests carry a correlation ID but no search data in diagnostics. Provider HTTP 503 and transport timeouts return only `temporarily_unavailable`. A DPD HTTP 500 is parsed solely to classify documented SOAP faults.

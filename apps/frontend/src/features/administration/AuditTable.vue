@@ -29,6 +29,8 @@ const { t } = useI18n(),
 // Underscores within event codes are meaningful; maintain the explicit public audit vocabulary.
 const eventCodes = [
   'carrier.configuration_changed',
+  'carrier.sandbox_configuration_changed',
+  'carrier.sandbox_checked',
   'tariff.imported',
   'pricing.rule_created',
   'auth.login',
