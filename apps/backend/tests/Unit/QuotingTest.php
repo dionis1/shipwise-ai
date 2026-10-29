@@ -131,6 +131,6 @@ final class QuotingTest extends TestCase
             }
         };
         self::assertSame('invalid_response', (new ProviderRegistry([$provider]))->quote('test', new ShipmentRequest(self::shipment()), ['currency' => 'EUR'])->status);
-        self::assertSame('unsupported_rating', (new ProviderRegistry([]))->quote('missing',new ShipmentRequest(self::shipment()),[])->status);
+        self::assertSame('unsupported_rating', (new ProviderRegistry([]))->quote('missing', new ShipmentRequest(self::shipment()), [])->status);
     }
 }

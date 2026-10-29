@@ -2842,6 +2842,1207 @@
         },
         "security": []
       }
+    },
+    "/carriers": {
+      "get": {
+        "operationId": "list_carrier_availability",
+        "tags": [
+          "Quoting"
+        ],
+        "summary": "list carrier availability",
+        "description": "Development-only rate source; production carriers remain unconfigured. Cookie session and CSRF apply to writes.",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CarrierCatalog"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid JSON",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden or invalid CSRF",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found or unauthorized quote",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Idempotency conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Quote expired",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/quotes": {
+      "post": {
+        "operationId": "create_quote",
+        "tags": [
+          "Quoting"
+        ],
+        "summary": "create quote",
+        "description": "Development-only rate source; production carriers remain unconfigured. Cookie session and CSRF apply to writes.",
+        "responses": {
+          "201": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Quote"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid JSON",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden or invalid CSRF",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found or unauthorized quote",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Idempotency conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Quote expired",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Shipment"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 80
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": []
+      }
+    },
+    "/quotes/{id}": {
+      "get": {
+        "operationId": "read_quote",
+        "tags": [
+          "Quoting"
+        ],
+        "summary": "read quote",
+        "description": "Development-only rate source; production carriers remain unconfigured. Cookie session and CSRF apply to writes.",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Quote"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid JSON",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden or invalid CSRF",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found or unauthorized quote",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Idempotency conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Quote expired",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Quote-Token",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 64
+            },
+            "description": "Guest quote-scoped token; also requires original session cookie. Owner authentication replaces token for private account quotes."
+          }
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ]
+      }
+    },
+    "/quotes/{id}/offers/{offerId}": {
+      "get": {
+        "operationId": "inspect_offer",
+        "tags": [
+          "Quoting"
+        ],
+        "summary": "inspect offer",
+        "description": "Development-only rate source; production carriers remain unconfigured. Cookie session and CSRF apply to writes.",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteSelection"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid JSON",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden or invalid CSRF",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found or unauthorized quote",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Idempotency conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Quote expired",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "offerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Quote-Token",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 64
+            },
+            "description": "Guest quote-scoped token; also requires original session cookie. Owner authentication replaces token for private account quotes."
+          }
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ]
+      }
+    },
+    "/admin/carriers": {
+      "get": {
+        "operationId": "admin_carriers",
+        "tags": [
+          "Quoting"
+        ],
+        "summary": "admin carriers",
+        "description": "Development-only rate source; production carriers remain unconfigured. Cookie session and CSRF apply to writes.",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminCarriers"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid JSON",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden or invalid CSRF",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found or unauthorized quote",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Idempotency conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Quote expired",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ]
+      }
+    },
+    "/admin/carriers/{code}": {
+      "patch": {
+        "operationId": "configure_carrier",
+        "tags": [
+          "Quoting"
+        ],
+        "summary": "configure carrier",
+        "description": "Development-only rate source; production carriers remain unconfigured. Cookie session and CSRF apply to writes.",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdatedCarrier"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid JSON",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden or invalid CSRF",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found or unauthorized quote",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Idempotency conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Quote expired",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CarrierUpdate"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/admin/tariffs": {
+      "get": {
+        "operationId": "list_tariffs",
+        "tags": [
+          "Quoting"
+        ],
+        "summary": "list tariffs",
+        "description": "Development-only rate source; production carriers remain unconfigured. Cookie session and CSRF apply to writes.",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Versions"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid JSON",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden or invalid CSRF",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found or unauthorized quote",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Idempotency conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Quote expired",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ]
+      },
+      "post": {
+        "operationId": "import_development_tariff",
+        "tags": [
+          "Quoting"
+        ],
+        "summary": "import development tariff",
+        "description": "Development-only rate source; production carriers remain unconfigured. Cookie session and CSRF apply to writes.",
+        "responses": {
+          "201": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatedVersion"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid JSON",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden or invalid CSRF",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found or unauthorized quote",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Idempotency conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Quote expired",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TariffImport"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/admin/pricing-rules": {
+      "get": {
+        "operationId": "list_pricing_rules",
+        "tags": [
+          "Quoting"
+        ],
+        "summary": "list pricing rules",
+        "description": "Development-only rate source; production carriers remain unconfigured. Cookie session and CSRF apply to writes.",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Versions"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid JSON",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden or invalid CSRF",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found or unauthorized quote",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Idempotency conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Quote expired",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ]
+      },
+      "post": {
+        "operationId": "create_pricing_rule",
+        "tags": [
+          "Quoting"
+        ],
+        "summary": "create pricing rule",
+        "description": "Development-only rate source; production carriers remain unconfigured. Cookie session and CSRF apply to writes.",
+        "responses": {
+          "201": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatedVersion"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid JSON",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden or invalid CSRF",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found or unauthorized quote",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Idempotency conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Quote expired",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PricingImport"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/admin/quote-diagnostics": {
+      "get": {
+        "operationId": "read_quote_diagnostics",
+        "tags": [
+          "Quoting"
+        ],
+        "summary": "Read aggregate quote outcomes",
+        "description": "Development-only rate source; production carriers remain unconfigured. Cookie session and CSRF apply to writes.",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteDiagnostics"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid JSON",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden or invalid CSRF",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found or unauthorized quote",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Idempotency conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Quote expired",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ]
+      }
     }
   },
   "components": {
@@ -3276,7 +4477,816 @@
           "total"
         ],
         "additionalProperties": false
+      },
+      "Shipment": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "originCountry": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 2
+          },
+          "destinationCountry": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 2
+          },
+          "originPostalCode": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 16
+          },
+          "destinationPostalCode": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 16
+          },
+          "weightGrams": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 70000
+          },
+          "lengthMm": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2000
+          },
+          "widthMm": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2000
+          },
+          "heightMm": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2000
+          },
+          "quantity": {
+            "type": "integer",
+            "enum": [
+              1
+            ]
+          },
+          "handover": {
+            "type": "string",
+            "enum": [
+              "any",
+              "drop_off",
+              "pickup"
+            ]
+          },
+          "speed": {
+            "type": "string",
+            "enum": [
+              "any",
+              "standard",
+              "express"
+            ]
+          }
+        },
+        "required": [
+          "originCountry",
+          "destinationCountry",
+          "originPostalCode",
+          "destinationPostalCode",
+          "weightGrams",
+          "lengthMm",
+          "widthMm",
+          "heightMm",
+          "quantity",
+          "handover",
+          "speed"
+        ]
+      },
+      "QuotePrice": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "baseMinor": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "surchargeMinor": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "marginMinor": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "feeMinor": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "netMinor": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "taxMinor": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "totalMinor": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "taxBasisPoints": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "currency": {
+            "type": "string"
+          },
+          "taxIncluded": {
+            "type": "boolean"
+          },
+          "taxScenario": {
+            "type": "string"
+          },
+          "pricingVersion": {
+            "type": "string"
+          },
+          "development": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "baseMinor",
+          "surchargeMinor",
+          "marginMinor",
+          "feeMinor",
+          "netMinor",
+          "taxMinor",
+          "totalMinor",
+          "taxBasisPoints",
+          "currency",
+          "taxIncluded",
+          "taxScenario",
+          "pricingVersion",
+          "development"
+        ]
+      },
+      "QuoteOffer": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "quoteId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "carrierCode": {
+            "type": "string"
+          },
+          "carrierName": {
+            "type": "string"
+          },
+          "serviceCode": {
+            "type": "string"
+          },
+          "price": {
+            "$ref": "#/components/schemas/QuotePrice"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "development_tariff"
+            ]
+          },
+          "tariffVersion": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "quoted"
+            ]
+          },
+          "eligible": {
+            "type": "boolean"
+          },
+          "bookable": {
+            "type": "boolean"
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "speed": {
+            "type": "string"
+          },
+          "deliveryEstimate": {
+            "type": "object",
+            "nullable": true,
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "id",
+          "quoteId",
+          "carrierCode",
+          "carrierName",
+          "serviceCode",
+          "price",
+          "source",
+          "tariffVersion",
+          "createdAt",
+          "expiresAt",
+          "status",
+          "eligible",
+          "bookable",
+          "options",
+          "speed",
+          "deliveryEstimate"
+        ]
+      },
+      "QuoteOutcome": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "carrierCode": {
+            "type": "string"
+          },
+          "serviceCode": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "reasons": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "carrierCode",
+          "serviceCode",
+          "status",
+          "reasons"
+        ]
+      },
+      "Quote": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "shipment": {
+            "$ref": "#/components/schemas/Shipment"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "expired": {
+            "type": "boolean"
+          },
+          "temporary": {
+            "type": "boolean"
+          },
+          "offers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/QuoteOffer"
+            }
+          },
+          "outcomes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/QuoteOutcome"
+            }
+          },
+          "accessToken": {
+            "type": "string",
+            "description": "Returned only on guest create/replay. Keep in memory; read also requires originating session."
+          }
+        },
+        "required": [
+          "id",
+          "shipment",
+          "createdAt",
+          "expiresAt",
+          "expired",
+          "temporary",
+          "offers",
+          "outcomes"
+        ]
+      },
+      "QuoteSelection": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "shipment": {
+            "$ref": "#/components/schemas/Shipment"
+          },
+          "offer": {
+            "$ref": "#/components/schemas/QuoteOffer"
+          },
+          "bookingAvailable": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "shipment",
+          "offer",
+          "bookingAvailable"
+        ]
+      },
+      "PublicCarrier": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "unconfigured",
+              "development_tariff"
+            ]
+          }
+        },
+        "required": [
+          "code",
+          "name",
+          "enabled",
+          "mode"
+        ]
+      },
+      "CarrierCatalog": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "carriers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicCarrier"
+            }
+          },
+          "countries": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "singleParcel": {
+            "type": "boolean"
+          },
+          "units": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "weight": {
+                "type": "string",
+                "enum": [
+                  "grams"
+                ]
+              },
+              "dimensions": {
+                "type": "string",
+                "enum": [
+                  "millimeters"
+                ]
+              }
+            },
+            "required": [
+              "weight",
+              "dimensions"
+            ]
+          }
+        },
+        "required": [
+          "carriers",
+          "countries",
+          "singleParcel",
+          "units"
+        ]
+      },
+      "CarrierRecord": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "mode": {
+            "type": "string"
+          },
+          "last_checked_at": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "code",
+          "name",
+          "enabled",
+          "mode",
+          "last_checked_at"
+        ]
+      },
+      "ServiceRules": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "routes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "maxWeightGrams": {
+            "type": "integer"
+          },
+          "maxDimensionsMm": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "handover": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "speed": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "routes",
+          "maxWeightGrams",
+          "maxDimensionsMm",
+          "handover",
+          "speed"
+        ]
+      },
+      "TariffConfig": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "baseMinor": {
+            "type": "integer"
+          },
+          "perKgMinor": {
+            "type": "integer"
+          },
+          "surchargeMinor": {
+            "type": "integer"
+          },
+          "currency": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "baseMinor",
+          "perKgMinor",
+          "surchargeMinor",
+          "currency"
+        ]
+      },
+      "PricingConfig": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "Versioned synthetic development pricing configuration; never contains credentials."
+      },
+      "ServiceRecord": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "carrier_code": {
+            "type": "string"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "rules": {
+            "$ref": "#/components/schemas/ServiceRules"
+          },
+          "carrier_name": {
+            "type": "string"
+          },
+          "carrier_enabled": {
+            "type": "boolean"
+          },
+          "carrierEnabled": {
+            "type": "boolean"
+          },
+          "mode": {
+            "type": "string"
+          },
+          "tariff_version": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "code",
+          "carrier_code",
+          "enabled",
+          "rules",
+          "carrier_name",
+          "carrier_enabled",
+          "carrierEnabled",
+          "mode",
+          "tariff_version"
+        ]
+      },
+      "AdminCarriers": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "carriers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CarrierRecord"
+            }
+          },
+          "services": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ServiceRecord"
+            }
+          }
+        },
+        "required": [
+          "carriers",
+          "services"
+        ]
+      },
+      "TariffImport": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "serviceCode": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string",
+            "maxLength": 80,
+            "pattern": "^[a-zA-Z0-9._-]+$"
+          },
+          "baseMinor": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000
+          },
+          "perKgMinor": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000
+          },
+          "surchargeMinor": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "EUR"
+            ]
+          },
+          "effectiveFrom": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "serviceCode",
+          "version",
+          "baseMinor",
+          "perKgMinor",
+          "surchargeMinor",
+          "currency",
+          "effectiveFrom"
+        ]
+      },
+      "PricingImport": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "serviceCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "version": {
+            "type": "string",
+            "maxLength": 80
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "EUR"
+            ]
+          },
+          "fixedMarginMinor": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000
+          },
+          "minimumMarginMinor": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000
+          },
+          "feeMinor": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000
+          },
+          "marginBasisPoints": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 10000
+          },
+          "taxBasisPoints": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 10000
+          }
+        },
+        "required": [
+          "version",
+          "currency",
+          "fixedMarginMinor",
+          "minimumMarginMinor",
+          "feeMinor",
+          "marginBasisPoints",
+          "taxBasisPoints"
+        ]
+      },
+      "VersionRecord": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "service_code": {
+            "type": "string",
+            "nullable": true
+          },
+          "version": {
+            "type": "string"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "effective_from": {
+            "type": "string"
+          },
+          "configuration": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TariffConfig"
+              },
+              {
+                "$ref": "#/components/schemas/PricingConfig"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "service_code",
+          "version",
+          "active",
+          "created_at",
+          "configuration"
+        ]
+      },
+      "Versions": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VersionRecord"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "CreatedVersion": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "CarrierUpdate": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          },
+          "serviceCode": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "enabled"
+        ]
+      },
+      "UpdatedCarrier": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "updated": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "updated"
+        ]
+      },
+      "QuoteDiagnostics": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "items"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "status",
+                "count"
+              ],
+              "properties": {
+                "status": {
+                  "type": "string"
+                },
+                "count": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
       }
     }
-  }
+  },
+  "tags": [
+    {
+      "name": "Quoting",
+      "description": "Preliminary development quotations; no bookable commitments."
+    }
+  ]
 }
