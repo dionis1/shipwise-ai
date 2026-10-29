@@ -12,7 +12,7 @@ final class DhlSandboxClient implements CarrierShipmentValidator
     }
 
     /** Public version plus authenticated hello; raw token metadata is discarded. */
-    public function check(): ?string
+    public function check(): string
     {
         $this->configuration->guard('DHL');
         $versionResponse = $this->transport->request('dhl_version');
@@ -20,7 +20,7 @@ final class DhlSandboxClient implements CarrierShipmentValidator
             throw new IntegrationFailure('response_invalid');
         }
         $version = $this->transport->json($versionResponse['body'])['amp']['version'] ?? null;
-        if (null !== $version && (!is_string($version) || !preg_match('/^[A-Za-z0-9._-]{1,40}$/D', $version))) {
+        if (!is_string($version) || !preg_match('/^[A-Za-z0-9._-]{1,40}$/D', $version)) {
             throw new IntegrationFailure('response_invalid');
         }
         $this->hello();

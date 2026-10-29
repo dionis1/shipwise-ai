@@ -4,6 +4,7 @@ namespace App\CarrierIntegration\Infrastructure;
 
 use App\CarrierIntegration\Domain\IntegrationFailure;
 use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -21,24 +22,25 @@ final class SandboxTransport
 
     private HttpClientInterface $client;
 
-    public function __construct(?HttpClientInterface $client = null)
+    public function __construct(?HttpClientInterface $client = null, private ?RequestStack $requests = null)
     {
         $this->client = $client ?? HttpClient::create();
     }
 
     /** @param array<string,string> $headers
      * @return array{status:int,body:string} */
-    public function request(string $operation, array $headers = [], string $body = ''): array
+    public function request(string $operation, #[\SensitiveParameter] array $headers = [], #[\SensitiveParameter] string $body = ''): array
     {
         [$method, $url] = self::ENDPOINTS[$operation] ?? throw new IntegrationFailure('operation_unsupported');
         $response = null;
         try {
             $response = $this->client->request($method, $url, [
-                'headers' => $headers,
+                'headers' => ['X-Request-ID' => (string) ($this->requests?->getCurrentRequest()?->attributes->get('correlationId') ?? bin2hex(random_bytes(16)))] + $headers,
                 'body' => $body,
                 'timeout' => 4.0,
                 'max_duration' => 8.0,
                 'max_redirects' => 0,
+                'buffer' => false,
                 'verify_peer' => true,
                 'verify_host' => true,
                 'extra' => ['trace_content' => false],
@@ -57,7 +59,7 @@ final class SandboxTransport
                 }
             }
             // DPD returns typed SOAP faults with HTTP 500; the XML layer must classify those.
-            if ($status >= 500 && !str_starts_with($operation, 'dpd_')) {
+            if ($status >= 500 && !(500 === $status && str_starts_with($operation, 'dpd_'))) {
                 throw new IntegrationFailure('temporarily_unavailable');
             }
             if (!in_array($status, [200, 201, 400, 500], true)) {
@@ -74,7 +76,7 @@ final class SandboxTransport
     }
 
     /** @return array<string,mixed> */
-    public function json(string $body): array
+    public function json(#[\SensitiveParameter] string $body): array
     {
         try {
             $data = json_decode($body, true, 32, JSON_THROW_ON_ERROR);

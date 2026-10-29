@@ -7,7 +7,7 @@ use App\CarrierIntegration\Domain\IntegrationFailure;
 final readonly class SandboxConfiguration
 {
     /** @param array<string,string> $values */
-    public function __construct(private string $environment, private array $values)
+    public function __construct(private string $environment, #[\SensitiveParameter] private array $values)
     {
     }
 

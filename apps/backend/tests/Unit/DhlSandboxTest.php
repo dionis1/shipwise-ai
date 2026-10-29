@@ -85,4 +85,10 @@ final class DhlSandboxTest extends TestCase
         $this->expectExceptionMessage('authentication_failed');
         $this->client($http)->validateFixture();
     }
+
+    public function testInvalidVersionCannotEstablishConnectivity(): void
+    {
+        $this->expectExceptionMessage('response_invalid');
+        $this->client(new MockHttpClient(new MockResponse('{"amp":"unexpected"}')))->check();
+    }
 }

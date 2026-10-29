@@ -92,4 +92,50 @@ final class SandboxFoundationTest extends TestCase
         $this->expectExceptionMessage('response_invalid');
         (new SandboxTransport(new MockHttpClient()))->json('{secret');
     }
+
+    public function testExpiredTokensAreReauthenticated(): void
+    {
+        $cache = new ArrayAdapter();
+        $key = 'carrier_'.hash('sha256', 'expired');
+        $cache->save($cache->getItem($key)->set('expired-token')->expiresAfter(-1));
+        $tokens = new SandboxTokens($cache, new LockFactory(new InMemoryStore()));
+        self::assertSame('replacement-token', $tokens->get('expired', static fn (): array => ['token' => 'replacement-token', 'ttl' => 60]));
+    }
+
+    public function testConcurrentTokenRefreshFailsWithoutWaiting(): void
+    {
+        $factory = new LockFactory(new InMemoryStore());
+        $held = $factory->createLock('carrier_'.hash('sha256', 'busy'), 15);
+        self::assertTrue($held->acquire());
+        $this->expectExceptionMessage('temporarily_unavailable');
+        try {
+            (new SandboxTokens(new ArrayAdapter(), $factory))->get('busy', static fn (): array => ['token' => 'unused', 'ttl' => 60]);
+        } finally {
+            $held->release();
+        }
+    }
+
+    public function testTimeoutIsSanitizedWithoutPreviousException(): void
+    {
+        $body = static function (): \Generator { yield ''; };
+        try {
+            (new SandboxTransport(new MockHttpClient(new MockResponse($body()))))->request('dhl_version');
+            self::fail('Expected timeout.');
+        } catch (IntegrationFailure $failure) {
+            self::assertSame('temporarily_unavailable', $failure->reason);
+            self::assertNull($failure->getPrevious());
+        }
+    }
+
+    public function testDpdUnavailableIsNotMisclassifiedAsSoapFault(): void
+    {
+        $this->expectExceptionMessage('temporarily_unavailable');
+        (new SandboxTransport(new MockHttpClient(new MockResponse('upstream private message', ['http_code' => 503]))))->request('dpd_locations');
+    }
+
+    public function testSearchRejectsInvalidUtf8(): void
+    {
+        $this->expectExceptionMessage('search_invalid');
+        new LocationSearch('DE', '10115', chr(255));
+    }
 }

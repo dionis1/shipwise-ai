@@ -11,17 +11,17 @@ final class DpdXml
     public const LOGIN = 'http://dpd.com/common/service/types/LoginService/2.0';
     public const SHOPS = 'http://dpd.com/common/service/types/ParcelShopFinderService/5.0';
 
-    public function element(string $name, string $value): string
+    public function element(string $name, #[\SensitiveParameter] string $value): string
     {
         return '<'.$name.'>'.htmlspecialchars($value, ENT_XML1 | ENT_QUOTES, 'UTF-8').'</'.$name.'>';
     }
 
-    public function envelope(string $body, string $header = ''): string
+    public function envelope(#[\SensitiveParameter] string $body, #[\SensitiveParameter] string $header = ''): string
     {
         return '<?xml version="1.0" encoding="UTF-8"?><soap:Envelope xmlns:soap="'.self::SOAP.'"><soap:Header>'.$header.'</soap:Header><soap:Body>'.$body.'</soap:Body></soap:Envelope>';
     }
 
-    public function response(string $xml, string $namespace, string $element, int $status): \DOMElement
+    public function response(#[\SensitiveParameter] string $xml, string $namespace, string $element, int $status): \DOMElement
     {
         if (strlen($xml) > 262144 || preg_match('/<!DOCTYPE|<!ENTITY/i', $xml)) {
             throw new IntegrationFailure('response_invalid');
@@ -39,6 +39,9 @@ final class DpdXml
                 throw new IntegrationFailure('response_invalid');
             }
             $body = $bodies->item(0);
+            if ($body?->parentNode !== $document->documentElement) {
+                throw new IntegrationFailure('response_invalid');
+            }
             $fault = $document->getElementsByTagNameNS(self::SOAP, 'Fault');
             if ($fault->length > 0) {
                 if ($document->getElementsByTagNameNS(self::AUTH, 'authenticationFault')->length > 0) {
@@ -49,7 +52,7 @@ final class DpdXml
                 }
                 throw new IntegrationFailure('temporarily_unavailable');
             }
-            $response = $body?->firstChild;
+            $response = $body->firstChild;
             if (200 !== $status || !$response instanceof \DOMElement || $response->nextSibling || $response->localName !== $element || $response->namespaceURI !== $namespace) {
                 throw new IntegrationFailure('response_invalid');
             }

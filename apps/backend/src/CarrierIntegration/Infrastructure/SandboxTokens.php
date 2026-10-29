@@ -16,8 +16,12 @@ final class SandboxTokens
     public function get(string $key, callable $authenticate): string
     {
         $key = 'carrier_'.hash('sha256', $key);
+        $cached = $this->carrierTokens->getItem($key);
+        if ($cached->isHit() && is_string($cached->get())) {
+            return $cached->get();
+        }
         $lock = $this->lockFactory->createLock($key, 15);
-        if (!$lock->acquire(true)) {
+        if (!$lock->acquire(false)) {
             throw new IntegrationFailure('temporarily_unavailable');
         }
         try {
