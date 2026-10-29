@@ -235,4 +235,16 @@ final class QuoteApiTest extends WebTestCase
         self::assertTrue($limiter->consume(20)->isAccepted());
         self::assertFalse($limiter->consume()->isAccepted());
     }
+
+    public function testHistoricalTariffConfigurationCannotBeEdited(): void
+    {
+        $original = $this->db()->fetchOne("SELECT configuration FROM carrier_tariffs WHERE service_code='DEV_STANDARD' AND version='dev-tariff-1'");
+        try {
+            $this->db()->executeStatement("UPDATE carrier_tariffs SET configuration='{}' WHERE service_code='DEV_STANDARD' AND version='dev-tariff-1'");
+            self::fail('Tariff versions must be immutable.');
+        } catch (\Doctrine\DBAL\Exception\DriverException $e) {
+            self::assertSame('P0001', $e->getSQLState());
+        }
+        self::assertSame($original, $this->db()->fetchOne("SELECT configuration FROM carrier_tariffs WHERE service_code='DEV_STANDARD' AND version='dev-tariff-1'"));
+    }
 }

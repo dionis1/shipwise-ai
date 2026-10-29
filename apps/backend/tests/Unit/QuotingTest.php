@@ -133,4 +133,28 @@ final class QuotingTest extends TestCase
         self::assertSame('invalid_response', (new ProviderRegistry([$provider]))->quote('test', new ShipmentRequest(self::shipment()), ['currency' => 'EUR'])->status);
         self::assertSame('unsupported_rating', (new ProviderRegistry([]))->quote('missing', new ShipmentRequest(self::shipment()), [])->status);
     }
+
+    public function testCustomerCannotSupplySellingPrices(): void
+    {
+        $data = self::shipment();
+        $data['totalMinor'] = 1;
+        $this->expectExceptionMessage('shipment_fields');
+        new ShipmentRequest($data);
+    }
+
+    public function testProviderExceptionIsAnExplicitPartialFailure(): void
+    {
+        $provider = new class implements CarrierRateProvider {
+            public function code(): string
+            {
+                return 'broken';
+            }
+
+            public function quote(ShipmentRequest $request, array $tariff): RateResult
+            {
+                throw new \RuntimeException('Untrusted provider error');
+            }
+        };
+        self::assertSame('temporary_failure', (new ProviderRegistry([$provider]))->quote('broken', new ShipmentRequest(self::shipment()), [])->status);
+    }
 }
