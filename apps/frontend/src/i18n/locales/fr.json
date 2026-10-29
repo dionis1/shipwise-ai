@@ -103,24 +103,24 @@
   "home": {
     "eyebrow": "Une autre façon d’expédier",
     "title": "Un parcours plus simple, dès le départ.",
-    "description": "Nous concevons une solution pour comparer les transporteurs et garder une vue claire sur vos expéditions. Commencez par créer un compte sécurisé.",
-    "availability": "L’accès aux comptes est disponible. La comparaison et la réservation d’expéditions arriveront lors d’une prochaine phase.",
+    "description": "Comparez un colis avec des offres de développement transparentes ou gérez votre compte dans la langue de votre choix.",
+    "availability": "La comparaison de développement est disponible sans inscription. Les tarifs transporteurs en direct et la réservation ne sont pas encore disponibles.",
     "approach": "Notre approche",
     "clarity": "De la clarté à chaque étape.",
     "accountTitle": "Un point de départ sécurisé",
     "accountBody": "Confirmez votre adresse e-mail, gérez votre profil et choisissez votre langue.",
     "teamTitle": "Pensé pour votre équipe",
     "teamBody": "Des rôles clairs et des actions traçables donnent à chacun les accès adaptés.",
-    "futureTitle": "De la place pour la suite",
-    "futureBody": "La comparaison et la réservation viendront ensuite. Aucun tarif, achat ou envoi n’est encore disponible.",
+    "futureTitle": "Comparez un colis dès aujourd’hui",
+    "futureBody": "Découvrez des offres de développement clairement identifiées. Les intégrations transporteurs en direct et la réservation en ligne suivront dans une prochaine version.",
     "footer": "Pensé pour le voyage à venir."
   },
   "customer": {
     "welcome": "Bienvenue, {name}.",
     "description": "Votre compte, dans un espace simple et sécurisé.",
     "verified": "Adresse e-mail confirmée",
-    "shippingTitle": "Votre prochaine expédition commence ici.",
-    "shippingBody": "La comparaison et la réservation ne sont pas disponibles en phase 1.",
+    "shippingTitle": "Comparez votre colis",
+    "shippingBody": "Découvrez des offres préliminaires de développement aux prix transparents. Les tarifs transporteurs en direct et la réservation restent indisponibles.",
     "compare": "Comparer les options d’expédition",
     "profileDescription": "Mettez à jour votre nom et vos préférences.",
     "securityDescription": "Un mot de passe unique contribue à protéger votre compte.",
@@ -143,7 +143,7 @@
     "noActivity": "Un nouveau départ.",
     "noActivityBody": "Les événements de sécurité apparaîtront à mesure que les comptes seront utilisés.",
     "roadmapTitle": "Prêt pour la suite.",
-    "roadmapBody": "La comparaison, la réservation et les paiements relèvent des prochaines phases. Cet espace se concentre sur les personnes, les accès et la traçabilité."
+    "roadmapBody": "La comparaison de développement est disponible. Les tarifs transporteurs en direct, la réservation et les paiements restent des fonctionnalités à venir."
   },
   "staff": {
     "description": "Gérez les personnes qui font vivre votre plateforme.",

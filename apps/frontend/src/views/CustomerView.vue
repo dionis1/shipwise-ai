@@ -116,11 +116,13 @@ async function save() {
           </RouterLink>
         </AppCard>
         <AppCard class="future-shipping">
-          <AppBadge>{{ t('common.future') }}</AppBadge>
+          <AppBadge>{{ t('quote.devSource') }}</AppBadge>
           <ShipIllustration />
           <h2>{{ t('customer.shippingTitle') }}</h2>
           <p>{{ t('customer.shippingBody') }}</p>
-          <AppButton disabled>{{ t('customer.compare') }}</AppButton>
+          <RouterLink class="app-button button-primary" to="/compare">
+            {{ t('customer.compare') }}
+          </RouterLink>
         </AppCard>
       </div>
       <AppCard

@@ -103,24 +103,24 @@
   "home": {
     "eyebrow": "Versand, der verbindet",
     "title": "Ein klarer Weg – von Anfang an.",
-    "description": "Wir entwickeln eine durchdachte Möglichkeit, Versanddienstleister zu vergleichen und den Überblick zu behalten. Starte heute mit einem sicheren Konto.",
-    "availability": "Der Kontozugang ist bereits verfügbar. Versandvergleich und Buchung folgen in einer späteren Phase.",
+    "description": "Vergleiche ein Paket mit transparenten Entwicklungsangeboten oder verwalte dein Versandkonto in deiner bevorzugten Sprache.",
+    "availability": "Der Entwicklungsvergleich ist ohne Registrierung verfügbar. Live-Carrierpreise und Buchungen sind noch nicht verfügbar.",
     "approach": "Unser Ansatz",
     "clarity": "Klarheit bei jedem Schritt.",
     "accountTitle": "Ein sicherer Anfang",
     "accountBody": "Bestätige deine E-Mail-Adresse, verwalte dein Profil und wähle deine bevorzugte Sprache.",
     "teamTitle": "Für dein Team gemacht",
     "teamBody": "Klare Rollen und nachvollziehbare Abläufe verbinden die richtigen Menschen mit den passenden Aufgaben.",
-    "futureTitle": "Raum für den nächsten Schritt",
-    "futureBody": "Versandvergleich und Buchung folgen später. Tarife, Käufe und Sendungen sind noch nicht verfügbar.",
+    "futureTitle": "Vergleiche jetzt ein Paket",
+    "futureBody": "Entdecke klar gekennzeichnete Entwicklungsangebote. Live-Carrieranbindungen und Online-Buchungen folgen in einer späteren Version.",
     "footer": "Für alles, was kommt."
   },
   "customer": {
     "welcome": "Willkommen, {name}.",
     "description": "Dein Konto – übersichtlich und sicher.",
     "verified": "E-Mail-Adresse bestätigt",
-    "shippingTitle": "Deine nächste Sendung beginnt hier.",
-    "shippingBody": "Versandvergleich und Buchung sind in Phase 1 noch nicht verfügbar.",
+    "shippingTitle": "Vergleiche dein Paket",
+    "shippingBody": "Entdecke vorläufige Entwicklungsangebote mit transparenten Preisen. Live-Carrierpreise und Buchungen sind weiterhin nicht verfügbar.",
     "compare": "Versandoptionen vergleichen",
     "profileDescription": "Halte deinen Namen und deine Einstellungen aktuell.",
     "securityDescription": "Ein einzigartiges Passwort schützt dein Konto.",
@@ -143,7 +143,7 @@
     "noActivity": "Ein neuer Anfang.",
     "noActivityBody": "Sicherheitsereignisse erscheinen, sobald Konten genutzt werden.",
     "roadmapTitle": "Bereit für das nächste Kapitel.",
-    "roadmapBody": "Versandvergleich, Buchung und Zahlungen folgen später. Hier stehen Menschen, Zugänge und Nachvollziehbarkeit im Mittelpunkt."
+    "roadmapBody": "Der Entwicklungsvergleich ist jetzt verfügbar. Live-Carrierpreise, Buchungen und Zahlungen bleiben künftige Funktionen."
   },
   "staff": {
     "description": "Verwalte die Menschen hinter deiner Plattform.",

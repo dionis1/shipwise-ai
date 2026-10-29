@@ -91,6 +91,8 @@ for (const locale of ['en', 'de', 'fr'] as const) {
 }
 test('customer quote ownership and guest session isolation', async ({ page, browser }) => {
   await login(page, 'CUSTOMER')
+  await page.getByRole('link', { name: en.customer.compare, exact: true }).click()
+  await expect(page).toHaveURL(/\/compare$/)
   const response = await write(page.request, '/quotes', shipment)
   expect(response.status()).toBe(201)
   const quote = await response.json()

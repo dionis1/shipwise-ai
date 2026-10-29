@@ -103,24 +103,24 @@
   "home": {
     "eyebrow": "A more connected way to ship",
     "title": "A clearer journey, from the very start.",
-    "description": "We’re building a thoughtful way to compare carriers and keep your shipping journey in view. Start with a secure account today.",
-    "availability": "Account access is available now. Shipping comparison and booking are planned for a future phase.",
+    "description": "Compare a parcel with transparent development offers, or manage your shipping account in your preferred language.",
+    "availability": "Development comparison is available without registration. Live carrier rates and booking are not available yet.",
     "approach": "Our approach",
     "clarity": "Clarity at every step.",
     "accountTitle": "A secure place to start",
     "accountBody": "Verify your email, manage your profile and choose the language that feels right for you.",
     "teamTitle": "Built around your team",
     "teamBody": "Clear roles and accountable operations keep the right people connected to the right work.",
-    "futureTitle": "Room for what comes next",
-    "futureBody": "Carrier comparison and booking will follow. No rates, purchases or shipments are available yet.",
+    "futureTitle": "Compare a parcel today",
+    "futureBody": "Explore clearly labeled development offers. Live carrier integration and online booking will follow in a future release.",
     "footer": "Built for the journey ahead."
   },
   "customer": {
     "welcome": "Welcome, {name}.",
     "description": "Your account, in one calm and secure place.",
     "verified": "Email verification complete",
-    "shippingTitle": "Your next shipment starts here.",
-    "shippingBody": "Carrier comparison and booking are not available in Phase 1.",
+    "shippingTitle": "Compare your parcel",
+    "shippingBody": "Explore preliminary development offers with transparent prices. Live carrier rates and booking remain unavailable.",
     "compare": "Compare shipping options",
     "profileDescription": "Keep your name and account preferences up to date.",
     "securityDescription": "A unique password helps keep your account secure.",
@@ -143,7 +143,7 @@
     "noActivity": "A fresh start.",
     "noActivityBody": "Security events will appear as accounts are used.",
     "roadmapTitle": "Ready for the next chapter.",
-    "roadmapBody": "Carrier comparison, booking and payments belong to future phases. This workspace focuses on people, access and accountability."
+    "roadmapBody": "Development comparison is available now. Live carrier rates, booking and payments remain future capabilities."
   },
   "staff": {
     "description": "Manage the people behind your platform.",
