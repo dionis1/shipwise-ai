@@ -18,8 +18,13 @@ export class ApiError extends Error {
     super(message)
   }
 }
-export async function api<T>(path: string, method = 'GET', data?: unknown): Promise<T> {
-  const headers: Record<string, string> = { Accept: 'application/json' }
+export async function api<T>(
+  path: string,
+  method = 'GET',
+  data?: unknown,
+  extraHeaders: Record<string, string> = {},
+): Promise<T> {
+  const headers: Record<string, string> = { Accept: 'application/json', ...extraHeaders }
   if (method !== 'GET') {
     const response = await fetch('/api/v1/auth/csrf', { credentials: 'same-origin' })
     if (!response.ok)
