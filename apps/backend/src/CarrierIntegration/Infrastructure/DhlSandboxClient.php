@@ -60,10 +60,15 @@ final class DhlSandboxClient implements CarrierShipmentValidator
         $data = $this->transport->json($response['body']);
         $item = $data['items'][0] ?? null;
         $status = $item['sstatus']['status'] ?? $item['sstatus']['statusCode'] ?? null;
-        if (!is_array($item) || !in_array($status, [200, 400], true) || count($data['items']) !== 1 || array_intersect(array_keys($item), ['label', 'returnLabel', 'shipmentNo', 'returnShipmentNo'])) {
+        if (!is_array($item) || !in_array($status, [200, 400], true) || count($data['items']) !== 1 || array_intersect(array_keys($item), ['label', 'returnLabel', 'customsDoc', 'codLabel', 'shipmentNo', 'returnShipmentNo'])) {
             throw new IntegrationFailure('response_invalid');
         }
 
-        return 200 === $response['status'] && 200 === $status;
+        $messages = $item['validationMessages'] ?? [];
+        if (!is_array($messages) || !array_is_list($messages) || array_any($messages, static fn (mixed $message): bool => !is_array($message) || !is_string($message['validationState'] ?? null))) {
+            throw new IntegrationFailure('response_invalid');
+        }
+
+        return 200 === $response['status'] && 200 === $status && !array_any($messages, static fn (array $message): bool => 'Error' === $message['validationState']);
     }
 }

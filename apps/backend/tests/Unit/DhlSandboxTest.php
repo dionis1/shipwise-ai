@@ -70,7 +70,7 @@ final class DhlSandboxTest extends TestCase
 
     public function testValidationRejectionDoesNotExposeProviderPayload(): void
     {
-        self::assertFalse($this->client(new MockHttpClient([$this->token(), new MockResponse('{"items":[{"sstatus":{"status":400},"validationMessages":[{"validationMessage":"private provider detail"}]}]}', ['http_code' => 400])]))->validateFixture());
+        self::assertFalse($this->client(new MockHttpClient([$this->token(), new MockResponse('{"items":[{"sstatus":{"status":400},"validationMessages":[{"validationState":"Error","validationMessage":"private provider detail"}]}]}', ['http_code' => 400])]))->validateFixture());
     }
 
     public function testLabelsAreRejectedAndNeverReturned(): void
@@ -90,5 +90,10 @@ final class DhlSandboxTest extends TestCase
     {
         $this->expectExceptionMessage('response_invalid');
         $this->client(new MockHttpClient(new MockResponse('{"amp":"unexpected"}')))->check();
+    }
+
+    public function testItemValidationErrorsOverrideSuccessfulHttpStatus(): void
+    {
+        self::assertFalse($this->client(new MockHttpClient([$this->token(), new MockResponse('{"items":[{"sstatus":{"status":200},"validationMessages":[{"validationState":"Error","validationMessage":"private upstream detail"}]}]}')]))->validateFixture());
     }
 }
