@@ -1,6 +1,6 @@
 # Phase 2 — Carrier comparison and quoting
 
-Status: implementation complete, local verification in progress; remote CI evidence will be linked after execution. Based on verified main `6b9fe97`. Phase 1.5 remains an incomplete production gate. No Phase 3 purchase functionality is included.
+Status: implemented and verified locally and in [GitHub Actions](https://github.com/dionis1/shipwise-ai/actions/runs/40867977754) on `2846836`. Review: [pull request #3](https://github.com/dionis1/shipwise-ai/pull/3). Based on verified main `6b9fe97`. Phase 1.5 remains an incomplete production gate. No Phase 3 purchase functionality is included.
 
 ## Working scope and architecture
 
@@ -91,3 +91,11 @@ Debug with the response `X-Request-ID`, sanitized audit entries and authorized a
 Required acceptance covers canonical validation, eligibility boundaries, source provenance, integer pricing/rounding, rule/version precedence, immutable persistence, expiry, ownership/guest isolation, idempotency, least-privilege administration/audit, translations, accessible responsive comparison, fresh migrations, contracts, dependency checks and complete existing regressions. Actual counts and CI links belong in `docs/verification.md`.
 
 Remaining limitations: one parcel, two synthetic development services/routes, EUR source, no real contract/sandbox/live provider, no verified commercial tax treatment, no deliverability lookup, no delivery estimates, no durable account history, no booking. Automated Axe/browser scans are not a comprehensive accessibility audit. Cleanup scheduling, production staff MFA and all other Phase 1.5 deployment gates remain outstanding. Phase 3 requires a separate implementation request and verified provider purchase/idempotency/payment designs; it has not started.
+
+## Delivery evidence
+
+The backend, frontend and E2E jobs passed independently in GitHub Actions on implementation head `2846836`. Local results are 83 PHPUnit tests / 278 assertions, 46 Vitest tests in 9 files, and 25 Playwright workflows including EN/DE/FR. All 37 API operations synchronize with the router and generated client. See `docs/verification.md` for exact commands, corrected failures and audit limitations.
+
+The [focused commit history](https://github.com/dionis1/shipwise-ai/pull/3/commits) and reviewable PR preserve the implementation steps without rewriting main. Subsequent documentation commits run the same CI gates. The PR is not automatically merged. Complete synthetic example response: `docs/api/phase-2-example.json`.
+
+Before a separate Phase 3 request: complete the relevant Phase 1.5 release gates, obtain authorized carrier API/contract access and verified commercial tax scenarios, then review payment-provider events, immutable order acceptance, purchase idempotency, outbox/inbox and reconciliation design. No such purchase work has started.

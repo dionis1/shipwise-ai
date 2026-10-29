@@ -78,4 +78,4 @@ Composer audit retains main's existing, narrowly scoped temporary exception for 
 
 Screenshots are generated at `apps/frontend/test-results/phase2-compare-{390,768,1440}.png` and uploaded with the existing CI interface artifacts; they are ignored by Git. Guest records require scheduled `app:purge-quotes` cleanup; access stops after the retention deadline independently. Automated scans do not prove full accessibility, commercial legality or production readiness. Phase 1.5 remains incomplete; Phase 3 has not started.
 
-Remote Phase 2 CI evidence will be recorded after actual execution.
+The [Phase 2 GitHub Actions run](https://github.com/dionis1/shipwise-ai/actions/runs/40867977754) on [`2846836`](https://github.com/dionis1/shipwise-ai/commit/28468365fe570927df77a669c77b60c7b6c102c1) completed successfully: backend, frontend and E2E all passed. Review is [PR #3](https://github.com/dionis1/shipwise-ai/pull/3), targeting main and left unmerged. Subsequent documentation commits run the same gates.
