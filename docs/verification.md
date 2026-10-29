@@ -56,3 +56,26 @@ See `README.md`, `docs/architecture/` and `docs/security/production-readiness.md
 Browser screenshots are generated at `apps/frontend/test-results/redesign-audit-{390,768,1440}.png` and uploaded by CI as short-lived artifacts. They are not committed. Automated checks and local browser inspection do not constitute a comprehensive accessibility, penetration or production deployment audit. Phase 1.5 remains planned and Phase 2 has not started.
 
 The first remote redesign run detected PHP formatting differences in three new/edited files despite the cached local lint result. Those differences were corrected and the Composer lint script now disables its cache so local and fresh CI inspect every file. The [corrected GitHub Actions run](https://github.com/dionis1/shipwise-ai/actions/runs/40702252940) on [`afcbbab`](https://github.com/dionis1/shipwise-ai/commit/afcbbab113773455ef5153ddb6ced8212f420de9) completed successfully: backend, frontend and E2E jobs all passed. The pull request is [#1](https://github.com/dionis1/shipwise-ai/pull/1), targeting the repository default branch `feat/phase-one-foundation`; it remains unmerged. Subsequent documentation-only commits are subject to the same CI checks.
+
+## Phase 2 verification (2026-10-29)
+
+Implementation is based on verified main `6b9fe97`. No live carrier credentials, commercial tariffs or legally verified tax scenarios were supplied. All offers in this phase come from the explicitly labeled deterministic development source.
+
+| Check | Actual local result |
+| --- | --- |
+| Backend | **83 tests / 278 assertions** passed, including all Phase 1 regressions, canonical parcel validation, integer pricing, rounding, currencies, provider contracts, SQL persistence/constraints, guest/owner access, CSRF, idempotency/retention, tariff versions, pricing precedence, RBAC, audit and expiry |
+| Frontend | **46 tests / 9 files** passed, including exact decimal-string conversion, comparison loading/validation/partial/empty states and backend-price sorting |
+| Browser | **25 workflows** passed, including EN/DE/FR comparison and existing Phase 1/1.6 regressions; guest/customer access, availability administration, invalid provider response isolation and offer expiry |
+| Accessibility/layout | Axe scans had no violations in covered comparison views/drawers and existing covered views; 390/768/1440px comparison, no horizontal overflow, native-dialog keyboard behavior |
+| Quality | Complete `make quality` passed: PHPStan, fresh PHP formatting, Symfony config/container/mapping checks, TypeScript, ESLint, Prettier, production build, OpenAPI and audits |
+| Translation coverage | **443 matching keys per locale**, placeholder consistency, untranslated Vue text and unknown static translation-key checks |
+| Contract | **37 operations** synchronized with Symfony, generated client synchronized |
+| Migrations | Both additive Phase 2 migrations applied locally and on fresh isolated E2E PostgreSQL databases |
+
+The first browser attempts found a required-label selector issue and use of secure-context-only randomUUID on the internal HTTP hostname. Both were corrected; request keys now use getRandomValues. A repeat run additionally exposed an availability-toggle race during catalog reload; actions now stay disabled until the refresh finishes, and the browser test waits for confirmed persistence. Visual inspection found a missing UTC resource, now fixed and covered by the stronger translation checker. SQL tests also verified actual PostgreSQL check/foreign-key errors and append-only snapshots.
+
+Composer audit retains main's existing, narrowly scoped temporary exception for the inaccurate symfony/mime advisory metadata; it is not a new broad exception. Its documented reevaluation deadline remains 2026-11-04. No new dependency or audit exception was introduced in Phase 2.
+
+Screenshots are generated at `apps/frontend/test-results/phase2-compare-{390,768,1440}.png` and uploaded with the existing CI interface artifacts; they are ignored by Git. Guest records require scheduled `app:purge-quotes` cleanup; access stops after the retention deadline independently. Automated scans do not prove full accessibility, commercial legality or production readiness. Phase 1.5 remains incomplete; Phase 3 has not started.
+
+Remote Phase 2 CI evidence will be recorded after actual execution.

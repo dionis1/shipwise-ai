@@ -8,4 +8,6 @@ Audit target IDs intentionally remain historical identifiers; actor FKs allow SE
 
 DBAL tables are deliberately outside ORM metadata. Use `doctrine:schema:validate --skip-sync` for ORM mapping and run the real migration on an empty PostgreSQL database to validate the full schema. Do not use ORM schema:update; it would propose removing DBAL-owned tables.
 
-Future organization memberships, carrier accounts, quotes, orders, payments and shipments remain documented designs only.
+Future organization memberships, authorized carrier accounts, orders, payments and shipments remain documented designs only. Preliminary development quotations are implemented in Phase 2.
+
+Phase 2 adds versioned carrier/service and tariff configuration, scoped pricing versions, owner/guest quotation records and immutable offer snapshots through `Version20261029000100` and `Version20261029000200`. Offer totals use constrained BIGINT minor units and separate currencies matched to the JSON snapshot. Foreign keys, active-version unique indexes, update triggers, expiry/retention indexes and scope/idempotency uniqueness protect consistency. Run `app:purge-quotes` at least hourly. See the Phase 2 guide for the 24-hour preliminary retention policy.

@@ -1,6 +1,6 @@
 # ShipWise AI
 
-A multi-carrier shipping marketplace foundation built as a Symfony 7.4 / PHP 8.4 modular monolith with a Vue 3 / TypeScript client. Phase 1 implements identity, database-backed access control, staff administration, customer profiles and audit history. Carrier quotes, purchases, payments, labels, tracking and AI advice are future capabilities; no simulated business metrics are presented as real.
+A multi-carrier shipping marketplace foundation built as a Symfony 7.4 / PHP 8.4 modular monolith with a Vue 3 / TypeScript client. Phase 1 implements identity, database-backed access control, staff administration, customer profiles and audit history. Phase 2 adds preliminary comparison from clearly labeled development tariffs. Live carrier integration, purchases, payments, labels, tracking and AI advice remain future capabilities; no simulated business metrics are presented as real.
 
 ## Local development
 
@@ -89,4 +89,10 @@ Before exposing customer accounts or staff administration to real users, impleme
 
 ## Phase 2 — Carrier comparison and quoting
 
-Start with approved carrier contracts, quote provenance, backend pricing in integer minor units, expiring immutable offers and a single sandbox adapter. Then add verified PSP events, transactional outbox/inbox, idempotent order purchase processing, private labels and reconciliation for unknown provider outcomes. Preserve the [future purchase safety design](docs/ARCHITECTURE.md); do not connect an AI model directly to financial or carrier purchase actions.
+Open `/compare` to quote one parcel in EN/DE/FR using the deterministic development provider. Run `make migrate` after pulling. Seeded routes are Germany → Germany/France; kilograms/centimeters convert to integer grams/millimeters. Prices include a visibly labeled synthetic tax scenario and are not real carrier commitments. DHL, DPD, GLS and UPS remain disabled and unconfigured.
+
+Offers expire after 15 minutes and preliminary records are retained for at most 24 hours. Run `docker compose exec backend php bin/console app:purge-quotes` at least hourly in any deployed quotation environment. Guest tokens stay in memory and require the original session; account reads require ownership.
+
+Authorized staff manage availability and append tariff versions at `/admin/carriers`; only Super Administrators manage pricing rules. See the [Phase 2 implementation guide](docs/phases/PHASE_2_CARRIER_COMPARISON_QUOTING.md) for architecture, exact pricing/rounding, source limitations, administration, provider extension and tests. [Example quotation](docs/api/phase-2-example.json) contains synthetic test data only.
+
+The next phase requires approved carrier contracts and legally verified commercial tax scenarios before any live offers. Purchase work must add verified PSP events, transactional outbox/inbox, idempotent order purchase processing, private labels and reconciliation for unknown provider outcomes. Preserve the [future purchase safety design](docs/ARCHITECTURE.md); do not connect an AI model directly to financial or carrier purchase actions.
