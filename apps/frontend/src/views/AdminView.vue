@@ -20,6 +20,7 @@ import AppSkeleton from '../components/AppSkeleton.vue'
 import AppEmptyState from '../components/AppEmptyState.vue'
 import FeedbackBox from '../components/FeedbackBox.vue'
 import ShipIllustration from '../components/ShipIllustration.vue'
+import CarrierManager from '../features/administration/CarrierManager.vue'
 import StaffManager from '../features/administration/StaffManager.vue'
 import RoleMatrix from '../features/administration/RoleMatrix.vue'
 import AuditTable from '../features/administration/AuditTable.vue'
@@ -87,7 +88,7 @@ watch(
       if (path === '/admin') {
         const data = await api<Dashboard>('/admin/dashboard')
         if (current === generation) overview.value = data
-      } else if (areas[path.split('/')[2]]) {
+      } else if (path !== '/admin/carriers' && areas[path.split('/')[2]]) {
         const data = await api<Department>('/admin/departments/' + path.split('/')[2])
         if (current === generation) department.value = data
       }
@@ -271,6 +272,9 @@ watch(
             {{ overview.health.version }}
           </p>
         </template>
+        <CarrierManager
+          v-if="route.path === '/admin/carriers' && session.can('carriers.catalog.read')"
+        />
         <StaffManager v-if="route.path === '/admin/staff'" />
         <RoleMatrix v-if="route.path === '/admin/access-control'" />
         <AuditTable v-if="route.path === '/admin/audit'" />

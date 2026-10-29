@@ -28,6 +28,9 @@ const { t } = useI18n(),
   { failure, errorText, clear } = useFeedback()
 // Underscores within event codes are meaningful; maintain the explicit public audit vocabulary.
 const eventCodes = [
+  'carrier.configuration_changed',
+  'tariff.imported',
+  'pricing.rule_created',
   'auth.login',
   'auth.logout',
   'auth.login_failed',
