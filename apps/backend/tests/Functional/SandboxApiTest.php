@@ -126,11 +126,11 @@ final class SandboxApiTest extends WebTestCase
         self::assertSame(0, (int) $this->db()->fetchOne("SELECT COUNT(*) FROM carriers WHERE code IN ('DHL','DPD','GLS','UPS') AND enabled=true"));
     }
 
-    public function testExplicitMockedSandboxCheckAndHealthInvalidation(): void
+    public function testExplicitMockedSandboxCheckDiscoveryAndHealthInvalidation(): void
     {
         $configuration = ['DPD_SANDBOX_ENABLED' => '1', 'DPD_DELIS_ID' => 'synthetic-user', 'DPD_PASSWORD' => 'synthetic-secret'];
         static::getContainer()->set(SandboxConfiguration::class, new SandboxConfiguration('dev', $configuration));
-        $http = new MockHttpClient(new MockResponse('<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body><l:getAuthResponse xmlns:l="http://dpd.com/common/service/types/LoginService/2.0"><return><authToken>synthetic-token</authToken></return></l:getAuthResponse></s:Body></s:Envelope>'));
+        $http = new MockHttpClient([new MockResponse('<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body><l:getAuthResponse xmlns:l="http://dpd.com/common/service/types/LoginService/2.0"><return><authToken>synthetic-token</authToken></return></l:getAuthResponse></s:Body></s:Envelope>'), new MockResponse('<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body><p:findParcelShopsResponse xmlns:p="http://dpd.com/common/service/types/ParcelShopFinderService/5.0"><parcelShop><parcelShopId>101</parcelShopId><company>Synthetic API Shop</company></parcelShop></p:findParcelShopsResponse></s:Body></s:Envelope>')]);
         static::getContainer()->set(SandboxTransport::class, new SandboxTransport($http));
         $this->login('CARRIER_MANAGER');
         $this->send('PATCH', '/admin/carrier-sandboxes/DPD', ['enabled' => true]);
@@ -142,6 +142,16 @@ final class SandboxApiTest extends WebTestCase
         $this->client->request('GET', '/api/v1/admin/carrier-sandboxes');
         self::assertSame('sandbox_connection_verified', $this->body()['items'][1]['status']);
         self::assertStringNotContainsString('synthetic-secret', $this->client->getResponse()->getContent());
+        $checkedAt = $this->db()->fetchOne("SELECT checked_at FROM carrier_sandboxes WHERE code='DPD'");
+        $this->client->request('GET', '/api/v1/parcel-shops?country=DE&postalCode=10115&carrier=DPD');
+        self::assertResponseIsSuccessful();
+        self::assertSame('101', $this->body()['items'][0]['id']);
+        self::assertSame('dpd_sandbox', $this->body()['items'][0]['source']);
+        self::assertNull($this->body()['items'][0]['latitude']);
+        self::assertSame([], $this->body()['items'][0]['services']);
+        self::assertSame([['carrier' => 'DPD', 'status' => 'available']], $this->body()['outcomes']);
+        self::assertSame(2, $http->getRequestsCount());
+        self::assertSame($checkedAt, $this->db()->fetchOne("SELECT checked_at FROM carrier_sandboxes WHERE code='DPD'"));
         $this->db()->executeStatement("UPDATE carrier_sandboxes SET checked_at=CURRENT_TIMESTAMP - INTERVAL '11 minutes' WHERE code='DPD'");
         $this->client->request('GET', '/api/v1/admin/carrier-sandboxes');
         self::assertSame('credentials_configured', $this->body()['items'][1]['status']);
