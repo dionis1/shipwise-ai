@@ -111,6 +111,7 @@ test('carrier administration, versioned tariffs and partial provider failure', a
     .getByRole('button', { name: en.quote.toggle + ' ' + en.quote.DEV_STANDARD, exact: true })
     .click()
   await page.getByRole('dialog').getByRole('button', { name: en.common.save, exact: true }).click()
+  await expect(page.getByRole('dialog')).not.toBeVisible()
   let quote = await (await write(page.request, '/quotes', shipment)).json()
   expect(quote.offers).toHaveLength(1)
   await page

@@ -19,6 +19,7 @@ const catalog = ref<components['schemas']['AdminCarriers'] | null>(null),
   pricing = ref<components['schemas']['VersionRecord'][]>([])
 const diagnostics = ref<components['schemas']['QuoteDiagnostics']['items']>([])
 const busy = ref(false),
+  loading = ref(false),
   failure = ref<unknown>(),
   saved = ref(false),
   editor = ref(''),
@@ -42,6 +43,7 @@ const error = computed(() =>
   invalid.value ? t('quote.adminInteger') : failure.value ? errorMessage(failure.value) : '',
 )
 async function load() {
+  loading.value = true
   failure.value = undefined
   try {
     catalog.value = await api('/admin/carriers')
@@ -55,6 +57,8 @@ async function load() {
       pricing.value = (await api<components['schemas']['Versions']>('/admin/pricing-rules')).items
   } catch (e) {
     failure.value = e
+  } finally {
+    loading.value = false
   }
 }
 function change(code: string, enabled: boolean, serviceCode?: string) {
@@ -137,7 +141,11 @@ onMounted(load)
 <template>
   <div class="carrier-catalog">
     <p class="feedback feedback-info">{{ t('quote.development') }}</p>
-    <FeedbackBox :error="error" :loading="busy" :success="saved ? t('quote.saved') : ''" />
+    <FeedbackBox
+      :error="error"
+      :loading="busy || loading"
+      :success="saved ? t('quote.saved') : ''"
+    />
     <AppCard :title="t('quote.adminTitle')">
       <div v-for="carrier in catalog?.carriers" :key="carrier.code" class="carrier-row">
         <div>
@@ -154,7 +162,7 @@ onMounted(load)
           <AppButton
             v-if="session.can('carriers.configure')"
             variant="secondary"
-            :disabled="carrier.mode === 'unconfigured'"
+            :disabled="busy || loading || carrier.mode === 'unconfigured'"
             :aria-label="t('quote.toggle') + ' ' + carrier.code"
             @click="change(carrier.code, !carrier.enabled)"
           >
@@ -185,6 +193,7 @@ onMounted(load)
           <AppButton
             v-if="session.can('carriers.configure')"
             variant="secondary"
+            :disabled="busy || loading"
             :aria-label="t('quote.toggle') + ' ' + t('quote.' + service.code)"
             @click="change(service.carrier_code, !service.enabled, service.code)"
           >
@@ -194,7 +203,9 @@ onMounted(load)
       </div>
     </AppCard>
     <AppCard v-if="session.can('tariffs.manage')" :title="t('quote.tariffs')">
-      <AppButton @click="start('tariff')">{{ t('quote.importTariff') }}</AppButton>
+      <AppButton :disabled="busy || loading" @click="start('tariff')">
+        {{ t('quote.importTariff') }}
+      </AppButton>
       <div v-for="item in tariffs" :key="item.id" class="carrier-row">
         <div>
           <strong>{{ item.version }}</strong>
@@ -208,7 +219,9 @@ onMounted(load)
       </div>
     </AppCard>
     <AppCard v-if="session.can('pricing.manage')" :title="t('quote.pricing')">
-      <AppButton @click="start('pricing')">{{ t('quote.createPricing') }}</AppButton>
+      <AppButton :disabled="busy || loading" @click="start('pricing')">
+        {{ t('quote.createPricing') }}
+      </AppButton>
       <div v-for="item in pricing" :key="item.id" class="carrier-row">
         <div>
           <strong>{{ item.version }}</strong>
