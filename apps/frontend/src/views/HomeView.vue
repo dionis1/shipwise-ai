@@ -17,8 +17,8 @@ const { t } = useI18n()
           <AppBadge tone="success">{{ t('home.eyebrow') }}</AppBadge>
           <h1>{{ t('home.title') }}</h1>
           <p class="hero-description">{{ t('home.description') }}</p>
-          <RouterLink class="app-button button-primary hero-cta" to="/register">
-            {{ t('auth.register') }}
+          <RouterLink class="app-button button-primary hero-cta" to="/compare">
+            {{ t('quote.search') }}
             <AppIcon name="next" />
           </RouterLink>
           <p class="fine-print">{{ t('home.availability') }}</p>
