@@ -12,7 +12,7 @@ services:
       $environment: '%kernel.environment%'
   App\:
     resource: '../src/'
-    exclude: '../src/{Kernel.php,Identity/Domain/,Shared/Domain/,AccessControl/Domain/}'
+    exclude: '../src/{Kernel.php,Identity/Domain/,Shared/Domain/,AccessControl/Domain/,Quoting/Domain/,Pricing/Domain/,CarrierCatalog/Domain/,CarrierIntegration/Domain/}'
   App\Identity\Application\Accounts: ~
   App\Identity\Domain\UserRepository: '@App\Identity\Infrastructure\DoctrineUserRepository'
   App\Identity\Application\TokenRepository: '@App\Identity\Infrastructure\SqlTokenRepository'
@@ -21,3 +21,13 @@ services:
   App\Audit\Application\AuditRepository: '@App\Audit\Infrastructure\SqlAuditRepository'
   App\Shared\Application\Transactions: '@App\Shared\Infrastructure\DoctrineTransactions'
   App\Identity\Application\Passwords: '@App\Identity\Infrastructure\SymfonyPasswords'
+
+  App\CarrierCatalog\Domain\Eligibility: ~
+  App\Pricing\Domain\PriceCalculator: ~
+  App\CarrierCatalog\Application\Catalog: '@App\CarrierCatalog\Infrastructure\SqlCatalog'
+  App\Quoting\Application\QuoteStore: '@App\Quoting\Infrastructure\SqlQuoteStore'
+  App\CarrierIntegration\Application\ProviderRegistry:
+    arguments:
+      $providers: ['@App\CarrierIntegration\Infrastructure\DevelopmentTariffProvider']
+
+  App\Pricing\Application\PricingRules: '@App\Pricing\Infrastructure\SqlPricingRules'

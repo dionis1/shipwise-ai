@@ -59,6 +59,16 @@ for (const file of files(resolve(root, 'src')).filter((file) => file.endsWith('.
   }
   if (ast) visit(ast)
 }
+for (const file of files(resolve(root, 'src')).filter(
+  (file) =>
+    /\.(vue|ts)$/.test(file) && !file.endsWith('.test.ts') && !file.endsWith('generated.ts'),
+)) {
+  const source = readFileSync(file, 'utf8')
+  for (const match of source.matchAll(/\bt\(\s*(['"])([A-Za-z0-9_.]+)\1\s*[,)]/g)) {
+    if (!(match[2] in baseline))
+      failures.push(relative(root, file) + ': unknown translation key ' + match[2])
+  }
+}
 if (failures.length) {
   process.stderr.write(failures.join('\n') + '\n')
   process.exitCode = 1

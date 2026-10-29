@@ -74,7 +74,14 @@ final class ApiSubscriber implements EventSubscriberInterface
         }
         $error = $event->getThrowable();
         $status = $error instanceof HttpExceptionInterface ? $error->getStatusCode() : ($error instanceof RuleViolation ? 422 : ($error instanceof AccessDeniedException ? 403 : 500));
+        $code = null;
+        if ($error instanceof \App\Quoting\Domain\QuoteViolation) {
+            $code = $error->reason;
+            $status = match ($code) {
+                'quote_not_found' => 404, 'quote_expired' => 410, 'idempotency_conflict' => 409, default => 422,
+            };
+        }
         $titles = [400 => 'Bad Request', 401 => 'Unauthorized', 403 => 'Forbidden', 404 => 'Not Found', 405 => 'Method Not Allowed', 409 => 'Conflict', 422 => 'Unprocessable Content', 429 => 'Too Many Requests', 500 => 'Internal Server Error'];
-        $event->setResponse(new JsonResponse(['code' => \App\Shared\Presentation\ProblemCode::of($error->getMessage(), $status), 'type' => 'about:blank', 'title' => $titles[$status] ?? 'Request Failed', 'status' => $status, 'detail' => $status >= 500 ? 'The request could not be completed.' : $error->getMessage(), 'correlationId' => $event->getRequest()->attributes->get('correlationId')], $status, array_merge($error instanceof HttpExceptionInterface ? $error->getHeaders() : [], ['Content-Type' => 'application/problem+json'])));
+        $event->setResponse(new JsonResponse(['code' => $code ?? \App\Shared\Presentation\ProblemCode::of($error->getMessage(), $status), 'type' => 'about:blank', 'title' => $titles[$status] ?? 'Request Failed', 'status' => $status, 'detail' => $status >= 500 ? 'The request could not be completed.' : $error->getMessage(), 'correlationId' => $event->getRequest()->attributes->get('correlationId')], $status, array_merge($error instanceof HttpExceptionInterface ? $error->getHeaders() : [], ['Content-Type' => 'application/problem+json'])));
     }
 }

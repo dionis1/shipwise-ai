@@ -81,11 +81,13 @@ jobs:
           docker compose run --rm --no-deps -e npm_config_cache=/tmp/npm frontend npm ci
       - name: Run isolated browser workflows
         run: make e2e
-      - name: Upload redesign previews
+      - name: Upload responsive interface previews
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: redesign-previews
-          path: apps/frontend/test-results/redesign-audit-*.png
+          path: |
+            apps/frontend/test-results/redesign-audit-*.png
+            apps/frontend/test-results/phase2-compare-*.png
           if-no-files-found: ignore
           retention-days: 7

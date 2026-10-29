@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useSession } from '../stores/session'
 import AuthView from '../views/AuthView.vue'
+import CompareView from '../views/CompareView.vue'
 import HomeView from '../views/HomeView.vue'
 import CustomerView from '../views/CustomerView.vue'
 import AdminView from '../views/AdminView.vue'
@@ -11,6 +12,7 @@ export const router = createRouter({
   history: createWebHistory(),
   routes: [
     { path: '/', component: HomeView },
+    { path: '/compare', component: CompareView },
     ...[
       'login',
       'register',

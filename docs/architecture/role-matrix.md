@@ -61,3 +61,5 @@ Read-only sanitized audit information
 Own customer profile only
 
 No staff permissions; own-profile access through authenticated identity.
+
+Phase 2 adds carriers.catalog.read, carriers.configure, tariffs.manage and quotes.diagnostics to SUPER_ADMIN and CARRIER_MANAGER. Only SUPER_ADMIN receives pricing.manage. Finance, Marketing, Support, QA and other existing grants are unchanged. Catalog reads omit tariff/pricing configurations; authorized version endpoints expose their own scopes. No staff permission grants access to another account’s private quotes.
