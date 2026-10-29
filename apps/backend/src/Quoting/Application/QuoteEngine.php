@@ -32,6 +32,9 @@ final class QuoteEngine
         return $this->store->exclusive($scope.':'.$key, function () use ($request, $data, $hash, $scope, $key, $owner, $secret): array {
             $existing = $this->store->duplicate($scope, $key);
             if ($existing) {
+                if (new \DateTimeImmutable($existing['purge_at']) <= new \DateTimeImmutable()) {
+                    throw new QuoteViolation('quote_not_found');
+                }
                 if ($existing['request_hash'] !== $hash) {
                     throw new QuoteViolation('idempotency_conflict');
                 }

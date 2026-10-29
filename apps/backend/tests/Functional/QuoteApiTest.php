@@ -220,11 +220,13 @@ final class QuoteApiTest extends WebTestCase
         $quote = $this->send('POST', '/quotes', QuotingTest::shipment());
         $row = $this->db()->fetchAssociative('SELECT * FROM shipping_quotes WHERE id=?', [$quote['id']]);
         $row['id'] = Identifier::new();
-        $row['idempotency_key'] = 'retained-expired';
+        $row['idempotency_key'] = hash('sha256', 'retained-expired-key-01');
         $row['created_at'] = gmdate('c', time() - 172800);
         $row['expires_at'] = gmdate('c', time() - 171900);
         $row['purge_at'] = gmdate('c', time() - 86400);
         $this->db()->insert('shipping_quotes', $row);
+        $this->send('POST', '/quotes', QuotingTest::shipment(), 'retained-expired-key-01');
+        self::assertResponseStatusCodeSame(404);
         $command = new \Symfony\Component\Console\Tester\CommandTester(static::getContainer()->get(\App\Quoting\Infrastructure\PurgeQuotesCommand::class));
         $command->execute([]);
         self::assertStringContainsString('Purged quotes: 1', $command->getDisplay());
