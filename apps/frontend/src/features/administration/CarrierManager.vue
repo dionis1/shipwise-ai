@@ -5,6 +5,7 @@ import { api, errorMessage } from '../../api/client'
 import type { components } from '../../api/generated'
 import { useSession } from '../../stores/session'
 import { formatDate, formatNumber } from '../../i18n'
+import SandboxManager from './SandboxManager.vue'
 import AppCard from '../../components/AppCard.vue'
 import AppButton from '../../components/AppButton.vue'
 import AppInput from '../../components/AppInput.vue'
@@ -146,6 +147,7 @@ onMounted(load)
       :loading="busy || loading"
       :success="saved ? t('quote.saved') : ''"
     />
+    <SandboxManager />
     <AppCard :title="t('quote.adminTitle')">
       <div v-for="carrier in catalog?.carriers" :key="carrier.code" class="carrier-row">
         <div>

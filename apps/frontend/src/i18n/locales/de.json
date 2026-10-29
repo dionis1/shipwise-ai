@@ -292,7 +292,11 @@
     "version_exists": "Diese Version existiert bereits. Wähle eine neue eindeutige Version.",
     "development_only": "Entwicklungsumgebung: fiktive Tarife und Steuerszenarien. Keine Live-Carrierpreise oder Buchungszusagen.",
     "money_invalid": "Verwende nichtnegative ganze Zahlen innerhalb der konfigurierten Grenzen.",
-    "currency_mismatch": "Ändere Route, Paketmaße oder Servicewünsche und versuche es erneut."
+    "currency_mismatch": "Ändere Route, Paketmaße oder Servicewünsche und versuche es erneut.",
+    "search_invalid": "Gib eine Postleitzahl mit 2–9 Zeichen und eine Stadt mit höchstens 50 Zeichen ein.",
+    "not_configured": "Nicht konfiguriert",
+    "disabled": "Deaktiviert",
+    "operation_unsupported": "Diese Sandbox-Operation wird nicht unterstützt."
   },
   "roles": {
     "SUPER_ADMIN": "Super-Administrator",
@@ -337,7 +341,9 @@
     "account_demo_created": "Demokonto erstellt",
     "carrier_configuration_changed": "Carrier-Konfiguration geändert",
     "tariff_imported": "Tarif importiert",
-    "pricing_rule_created": "Preisregel erstellt"
+    "pricing_rule_created": "Preisregel erstellt",
+    "carrier_sandbox_configuration_changed": "Carrier-Sandbox-Konfiguration geändert",
+    "carrier_sandbox_checked": "Carrier-Sandbox geprüft"
   },
   "statuses": {
     "active": "Aktiv",
@@ -484,6 +490,68 @@
       "ineligible": "Dienst nicht geeignet",
       "money_invalid": "Verwende nichtnegative ganze Zahlen innerhalb der konfigurierten Grenzen.",
       "pricing_invalid": "Verwende nichtnegative ganze Zahlen innerhalb der konfigurierten Grenzen."
+    }
+  },
+  "shops": {
+    "title": "Paketshops",
+    "subtitle": "Standorte aus einer aktivierten Carrier-Sandbox finden.",
+    "boundary": "Sandbox-Standorte bestätigen weder Versandpreise noch Buchbarkeit oder die Berechtigung zum Verkauf einer Carrier-Leistung.",
+    "searchTitle": "Standort suchen",
+    "country": "Land",
+    "postalCode": "Postleitzahl",
+    "city": "Stadt (optional)",
+    "carrier": "Versanddienstleister",
+    "allCarriers": "Alle verfügbaren Versanddienstleister",
+    "search": "Paketshops suchen",
+    "privacy": "Es werden nur Land, Postleitzahl und optional die Stadt übermittelt. Suchen werden nicht gespeichert.",
+    "results": "Ergebnisse der Paketshopsuche",
+    "start": "Standort eingeben",
+    "startBody": "Verwende eine Postleitzahl in Deutschland oder Frankreich.",
+    "empty": "Keine Paketshops gefunden",
+    "emptyBody": "Der Versanddienstleister hat für diese Suche keine Standorte geliefert.",
+    "unavailable": "Paketshopsuche nicht verfügbar",
+    "unavailableBody": "Prüfe den Status oben oder versuche es später erneut.",
+    "searchInvalid": "Gib eine Postleitzahl mit 2–9 Zeichen und eine Stadt mit höchstens 50 Zeichen ein.",
+    "unnamed": "Standortname nicht übermittelt",
+    "identifier": "Standort-ID des Anbieters",
+    "coordinates": "Koordinaten",
+    "services": "Verfügbare Servicecodes des Anbieters",
+    "source": "Quelle",
+    "retrieved": "Abgerufen",
+    "dpd_sandbox": "DPD-Sandbox"
+  },
+  "sandbox": {
+    "title": "Carrier-Sandbox-Verbindungen",
+    "boundary": "Sandbox-Zugriff ist von Versandverkäufen getrennt. Verbindungstests erteilen keine Live-Freigabe.",
+    "configurationHint": "Hinterlege Sandbox-Zugangsdaten in der lokalen Laufzeitkonfiguration und aktiviere die Umgebungsfreigabe, bevor du den administrativen Schalter einschaltest. Hier können keine Geheimnisse eingegeben werden.",
+    "liveNotApproved": "Live-Anbindung nicht freigegeben",
+    "environment": "Umgebungsfreigabe",
+    "switch": "Administrativer Schalter",
+    "enable": "Sandbox aktivieren",
+    "disable": "Sandbox deaktivieren",
+    "operation": {
+      "authentication": "Authentifizierung testen",
+      "validation": "Synthetische Testsendung validieren"
+    },
+    "status": {
+      "not_configured": "Nicht konfiguriert",
+      "disabled": "Deaktiviert",
+      "credentials_configured": "Zugangsdaten konfiguriert",
+      "sandbox_connection_verified": "Sandbox-Verbindung bestätigt",
+      "pending_approval": "Freigabe des Anbieters ausstehend",
+      "temporarily_unavailable": "Vorübergehend nicht verfügbar",
+      "authentication_failed": "Authentifizierung fehlgeschlagen",
+      "rate_limited": "Anfragelimit des Anbieters erreicht",
+      "response_invalid": "Ungültige Antwort des Anbieters",
+      "validation_passed": "Sandbox-Testsendung erfolgreich validiert",
+      "validation_rejected": "Sandbox-Testsendung abgelehnt",
+      "specification_unavailable": "Offizielle Spezifikation erforderlich",
+      "available": "Standorte verfügbar",
+      "search_rejected": "Suche vom Anbieter abgelehnt"
+    },
+    "carriers": {
+      "DPD": "DPD",
+      "GLS": "GLS"
     }
   }
 }

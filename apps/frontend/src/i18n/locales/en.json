@@ -292,7 +292,11 @@
     "version_exists": "This version already exists. Choose a new unique version.",
     "development_only": "Development environment: synthetic tariffs and tax scenarios. No live carrier rates or booking commitments.",
     "money_invalid": "Use non-negative whole numbers within the configured limits.",
-    "currency_mismatch": "Change the route, parcel measurements or service preferences and try again."
+    "currency_mismatch": "Change the route, parcel measurements or service preferences and try again.",
+    "search_invalid": "Enter a postal code of 2–9 characters and a city of at most 50 characters.",
+    "not_configured": "Not configured",
+    "disabled": "Disabled",
+    "operation_unsupported": "This sandbox operation is not supported."
   },
   "roles": {
     "SUPER_ADMIN": "Super Administrator",
@@ -337,7 +341,9 @@
     "account_demo_created": "Demo account created",
     "carrier_configuration_changed": "Carrier configuration changed",
     "tariff_imported": "Tariff imported",
-    "pricing_rule_created": "Pricing rule created"
+    "pricing_rule_created": "Pricing rule created",
+    "carrier_sandbox_configuration_changed": "Carrier sandbox configuration changed",
+    "carrier_sandbox_checked": "Carrier sandbox checked"
   },
   "statuses": {
     "active": "Active",
@@ -484,6 +490,68 @@
       "ineligible": "Service not eligible",
       "money_invalid": "Use non-negative whole numbers within the configured limits.",
       "pricing_invalid": "Use non-negative whole numbers within the configured limits."
+    }
+  },
+  "shops": {
+    "title": "Parcel shops",
+    "subtitle": "Find locations supplied by an enabled carrier sandbox.",
+    "boundary": "Sandbox locations do not establish shipping prices, booking availability or authorization to sell a carrier service.",
+    "searchTitle": "Search location",
+    "country": "Country",
+    "postalCode": "Postal code",
+    "city": "City (optional)",
+    "carrier": "Carrier",
+    "allCarriers": "All available carriers",
+    "search": "Search parcel shops",
+    "privacy": "Only country, postal code and optional city are sent. Searches are not saved.",
+    "results": "Parcel-shop results",
+    "start": "Enter a location to begin",
+    "startBody": "Use a postal code in Germany or France.",
+    "empty": "No parcel shops found",
+    "emptyBody": "The carrier returned no locations for this search.",
+    "unavailable": "Parcel-shop service unavailable",
+    "unavailableBody": "Check the carrier status above or try again later.",
+    "searchInvalid": "Enter a postal code of 2–9 characters and a city of at most 50 characters.",
+    "unnamed": "Location name not supplied",
+    "identifier": "Provider location ID",
+    "coordinates": "Coordinates",
+    "services": "Available provider service codes",
+    "source": "Source",
+    "retrieved": "Retrieved",
+    "dpd_sandbox": "DPD sandbox"
+  },
+  "sandbox": {
+    "title": "Carrier sandbox connections",
+    "boundary": "Sandbox access is separate from shipping sales. Connection checks never grant live approval.",
+    "configurationHint": "Install sandbox secrets in local runtime configuration and enable the environment flag before enabling the administrative switch. No secrets can be entered here.",
+    "liveNotApproved": "Live integration not approved",
+    "environment": "Environment gate",
+    "switch": "Administrative switch",
+    "enable": "Enable sandbox",
+    "disable": "Disable sandbox",
+    "operation": {
+      "authentication": "Test authentication",
+      "validation": "Validate synthetic fixture"
+    },
+    "status": {
+      "not_configured": "Not configured",
+      "disabled": "Disabled",
+      "credentials_configured": "Credentials configured",
+      "sandbox_connection_verified": "Sandbox connection verified",
+      "pending_approval": "Pending provider approval",
+      "temporarily_unavailable": "Temporarily unavailable",
+      "authentication_failed": "Authentication failed",
+      "rate_limited": "Provider rate limit reached",
+      "response_invalid": "Invalid provider response",
+      "validation_passed": "Sandbox fixture validation passed",
+      "validation_rejected": "Sandbox fixture validation rejected",
+      "specification_unavailable": "Official specification required",
+      "available": "Locations available",
+      "search_rejected": "Search rejected by provider"
+    },
+    "carriers": {
+      "DPD": "DPD",
+      "GLS": "GLS"
     }
   }
 }
