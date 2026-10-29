@@ -110,6 +110,7 @@ test('carrier administration, versioned tariffs and partial provider failure', a
   await page
     .getByRole('button', { name: en.quote.toggle + ' ' + en.quote.DEV_STANDARD, exact: true })
     .click()
+  await expect(page.getByRole('dialog')).toContainText(en.quote.DEV_STANDARD)
   await page.getByRole('dialog').getByRole('button', { name: en.common.save, exact: true }).click()
   await expect(page.getByRole('dialog')).not.toBeVisible()
   let quote = await (await write(page.request, '/quotes', shipment)).json()
@@ -117,6 +118,7 @@ test('carrier administration, versioned tariffs and partial provider failure', a
   await page
     .getByRole('button', { name: en.quote.toggle + ' ' + en.quote.DEV_STANDARD, exact: true })
     .click()
+  await expect(page.getByRole('dialog')).toContainText(en.quote.DEV_STANDARD)
   await page.getByRole('dialog').getByRole('button', { name: en.common.save, exact: true }).click()
   await expect(page.getByRole('dialog')).not.toBeVisible()
   const tariff = {

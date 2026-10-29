@@ -232,6 +232,12 @@ onMounted(load)
       </div>
     </AppCard>
     <AppModal v-model:open="confirm" :title="t('quote.confirm')" :busy="busy">
+      <p v-if="pending">
+        <strong>
+          {{ pending.serviceCode ? t('quote.' + pending.serviceCode) : pending.code }}
+        </strong>
+        · {{ t('quote.' + (pending.enabled ? 'enabled' : 'disabled')) }}
+      </p>
       <p>{{ t('quote.confirmBody') }}</p>
       <FeedbackBox :error="error" />
       <template #footer>
